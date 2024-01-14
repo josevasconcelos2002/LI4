@@ -1,0 +1,12 @@
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\bin\Debug\net8.0\leiloes.Business.deps.json
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\bin\Debug\net8.0\leiloes.Business.dll
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\bin\Debug\net8.0\leiloes.Business.pdb
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.AssemblyInfoInputs.cache
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.AssemblyInfo.cs
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.csproj.CoreCompileInputs.cache
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.sourcelink.json
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.dll
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\refint\leiloes.Business.dll
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\leiloes.Business.pdb
+C:\Users\Utilizador\Desktop\LI4\leiloes.Business\obj\Debug\net8.0\ref\leiloes.Business.dll
