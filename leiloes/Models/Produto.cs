@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace leiloes
+namespace leiloes.Models
 {
     [Table("Produto")]
     public class Produto

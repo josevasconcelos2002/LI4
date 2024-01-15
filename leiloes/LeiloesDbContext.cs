@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using leiloes; 
+using leiloes.Models; 
 
 namespace leiloes
 {
