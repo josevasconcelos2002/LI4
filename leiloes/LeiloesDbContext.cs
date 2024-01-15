@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using leiloes.Data; // isto corrige um erro for some reason
+using leiloes; 
 
-namespace leiloes.Data
+namespace leiloes
 {
     public class LeiloesDbContext : DbContext
     {

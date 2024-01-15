@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using leiloes.Data;
+using leiloes;
 using System.Linq;
 
 namespace leiloes.Controllers

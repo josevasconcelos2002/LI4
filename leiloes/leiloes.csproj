@@ -11,9 +11,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\leiloes.Business\leiloes.Business.csproj" />
-    <ProjectReference Include="..\leiloes.Data\leiloes.Data.csproj" />
-  </ItemGroup>
-
 </Project>

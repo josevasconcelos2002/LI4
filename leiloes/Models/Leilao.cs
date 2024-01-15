@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace leiloes.Data
+namespace leiloes
 {
     [Table("Leilao")]
     public class Leilao
