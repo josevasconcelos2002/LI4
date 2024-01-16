@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using leiloes.Models; 
-using System.Threading.Tasks;
 
 namespace leiloes.Controllers
 {
@@ -22,8 +21,6 @@ namespace leiloes.Controllers
             return View(produtos);
         }
 
-        
-        
         // CREATE -> Mostra a página de criação do produto
         public IActionResult Create()
         {

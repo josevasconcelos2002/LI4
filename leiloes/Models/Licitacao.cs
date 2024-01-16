@@ -15,16 +15,16 @@ namespace leiloes.Models
         public decimal Valor { get; set; }
 
         [Required]
-        public int LeilaoIdLeilao { get; set; }
+        public int leilao_IdLeilao { get; set; }
 
         [StringLength(9)]
-        public string UserNif { get; set; }
+        public string user_Nif { get; set; }
 
         // Relações de chave estrangeira
-        [ForeignKey("LeilaoIdLeilao")]
+        [ForeignKey("leilao_IdLeilao")]
         public Leilao Leilao { get; set; }
 
-        [ForeignKey("UserNif")]
+        [ForeignKey("user_Nif")]
         public Utilizador Utilizador { get; set; }
     }
 }

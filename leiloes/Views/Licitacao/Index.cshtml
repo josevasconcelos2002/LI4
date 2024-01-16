@@ -1,0 +1,28 @@
+﻿@using leiloes;
+@model IEnumerable<leiloes.Models.Licitacao>
+
+<!-- VIEW PROVISÓRIA - SÓ PARA TESTAR -->
+
+<h2>Lista de Produtos</h2>
+
+
+
+<table>
+    <tr>
+        <th>Id da licitacao</th>
+        <th>Valor</th>
+        <th>Id leilão</th>
+        <th>Nif User</th>
+    </tr>
+
+    @foreach (var produto in Model)
+    {
+        <tr>
+            <td>@produto.IdLicitacao</td>
+            <td>@produto.Valor</td>
+            <td>@produto.leilao_IdLeilao</td>
+            <td>@produto.user_Nif</td>
+        </tr>
+    }
+</table>
+
