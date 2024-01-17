@@ -16,6 +16,4 @@ namespace leiloes
         public DbSet<Licitacao> Licitacoes { get; set; }
     }
 
-
-
 }
