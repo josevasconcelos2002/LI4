@@ -42,10 +42,41 @@ namespace leiloes.Controllers
 
             return View(licitacao);
         }
-    
+
         // Falta implementar: 
         // Penso que nada. A única cena necessária aqui é criar a licitação
 
+
+
+
+
+
+
+
+
+
+        // APAGAR -> código de teste para criar uma licitacao
+        public async Task<IActionResult> TestCreateLicitacao()
+        {
+            var licitacaoTeste = new Licitacao
+            {
+                // Preencha com dados de teste
+                Valor = 1000m,
+                leilao_IdLeilao = 1,
+                user_Nif = "111111111"
+            };
+
+            _context.Licitacoes.Add(licitacaoTeste);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index"); // Ou retorne algum outro tipo de resposta
+        }
     }
+
+
+
+
+
+
 }
 

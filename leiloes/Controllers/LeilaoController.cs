@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using leiloes.Models;
+using System.Diagnostics;
 
 namespace leiloes.Controllers
 {
@@ -18,7 +19,7 @@ namespace leiloes.Controllers
         public IActionResult Index()
         {
             var leiloes = _context.Leiloes
-                .Include(l => l.Criador)  // Inclui a entidade Criador
+                .Include(l => l.Criador)  // Inclui a entidade Criador  // n sei se isto é preciso
                 .Include(l => l.Produto)  // Inclui a entidade Produto
                 .ToList();
             return View(leiloes);
@@ -37,6 +38,10 @@ namespace leiloes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LicitacaoAtual,PrecoMinLicitacao,Estado,DataInicial,DataFinal,CriadorId,ProdutoId")] Leilao leilao)
         {
+
+            Debug.WriteLine($"CriadorId: {leilao.CriadorId}, ProdutoId: {leilao.ProdutoId}");
+
+
             if (ModelState.IsValid)
             {
                 _context.Leiloes.Add(leilao);
@@ -93,6 +98,34 @@ namespace leiloes.Controllers
         // Falta implementar: 
         // Aprovar leilão -> mudar o estado de pendente para ativo 
 
+
+
+
+        
+        
+        
+        // APAGAR -> código de teste para criar um leilão
+        public async Task<IActionResult> TestCreateLeilao()
+        {
+            var leilaoTeste = new Leilao
+            {
+                // Preencha com dados de teste
+                LicitacaoAtual = 1000m,
+                PrecoMinLicitacao = 500m,
+                Estado = "Ativo",
+                DataInicial = DateTime.Now,
+                DataFinal = DateTime.Now.AddDays(7),
+                CriadorId = "333333333",  // Certifique-se de que este ID exista no seu banco de dados
+                ProdutoId = 1     // Certifique-se de que este ID exista no seu banco de dados
+            };
+
+            _context.Leiloes.Add(leilaoTeste);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index"); // Ou retorne algum outro tipo de resposta
+        }
+
     }
+
 }
 

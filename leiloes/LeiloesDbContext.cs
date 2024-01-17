@@ -15,4 +15,7 @@ namespace leiloes
         public DbSet<Utilizador> Utilizadores { get; set; }
         public DbSet<Licitacao> Licitacoes { get; set; }
     }
+
+
+
 }
