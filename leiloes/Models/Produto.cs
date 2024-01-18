@@ -15,7 +15,7 @@ namespace leiloes.Models
         public string Nome { get; set; }
 
         [Required]
-        [StringLength(255)]
+        [StringLength(45)]
         public string Descricao { get; set; }
 
         [StringLength(255)]

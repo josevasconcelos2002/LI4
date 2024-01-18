@@ -21,6 +21,8 @@ namespace leiloes.Controllers
             return View(produtos);
         }
 
+
+        // ---------------------- Criar Produto ----------------------
         // CREATE -> Mostra a página de criação do produto
         public IActionResult Create()
         {
@@ -43,6 +45,8 @@ namespace leiloes.Controllers
         }
 
 
+
+        // ---------------------- Eliminar Produto ----------------------
         // DELETE -> Mostra a página de remoção do produto
         public async Task<IActionResult> Delete(int? id)
         {
@@ -71,12 +75,6 @@ namespace leiloes.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        // Verifica se um produto existe -> Não usamos
-        private bool ProdutoExists(int id)
-        {
-            return _context.Produtos.Any(e => e.IdProduto == id);
         }
     }
 }

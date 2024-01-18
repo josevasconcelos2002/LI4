@@ -29,13 +29,12 @@ namespace leiloes.Controllers
         public async Task<IActionResult> Create([Bind("LicitacaoAtual,PrecoMinLicitacao,Estado,DataInicial,DataFinal,CriadorId,ProdutoId")] Leilao leilao)
         {
 
-            Debug.WriteLine($"CriadorId: {leilao.CriadorId}, ProdutoId: {leilao.ProdutoId}");
-
 
             if (ModelState.IsValid)
             {
 
-                leilao.LicitacaoAtual = 0.00M; // um leilão começa sem licitações
+                leilao.DataInicial = DateTime.Now; // o leilão começa quando é criado
+                leilao.LicitacaoAtual = 0.00M; // o leilão começa sem licitações
                 leilao.Estado = "pendente"; // o leilão fica em estado pendente até ser aprovado por um administrador
 
                 _context.Leiloes.Add(leilao);

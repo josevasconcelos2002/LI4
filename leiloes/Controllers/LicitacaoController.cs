@@ -31,18 +31,41 @@ namespace leiloes.Controllers
         // CREATE -> Processa a criação de uma licitacao
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Valor,IdLeilao,Nif,Data")] Licitacao licitacao)
+        public async Task<IActionResult> Create([Bind("Valor,IdLeilao,Data")] Licitacao licitacao)
         {
-            if (ModelState.IsValid)
+            // Extrair o NIF do utilizador do token JWT
+            var nif = User.FindFirst("Nif")?.Value; 
+
+            if (string.IsNullOrEmpty(nif))
             {
-                _context.Licitacoes.Add(licitacao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index"); // Ajustar
+                return Unauthorized();
             }
 
-            return View(licitacao);
-        }
+            var utilizador = await _context.Utilizadores.FindAsync(nif);
+            if (utilizador == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
 
+            // Verificar se o saldo é suficiente
+            if (utilizador.Saldo < licitacao.Valor)
+            {
+                return BadRequest("Saldo insuficiente para a licitação.");
+            }
+
+            // Atualizar o saldo do utilizador
+            utilizador.Saldo -= licitacao.Valor;
+            _context.Update(utilizador);
+
+            licitacao.user_Nif = nif;
+
+            // Adicionar a licitação
+            _context.Licitacoes.Add(licitacao);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index"); 
+        }
+    
 
 
 
@@ -68,7 +91,8 @@ namespace leiloes.Controllers
                 // Preencha com dados de teste
                 Valor = 1000m,
                 leilao_IdLeilao = 1,
-                user_Nif = "111111111"
+                user_Nif = "111111111",
+                dataLicitacao = DateTime.Now,
             };
 
             _context.Licitacoes.Add(licitacaoTeste);

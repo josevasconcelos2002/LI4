@@ -1,8 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<leiloes.Models.LeilaoViewModel>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Leilões Ativos</h2>
+
+<ul>
+    @foreach (var leilao in Model)
+    {
+        <li>
+            @leilao.NomeItem - Valor Atual: @leilao.ValorAtualLicitacao
+            <!-- Link para a página do leilão (a ser implementado no frontend) -->
+        </li>
+    }
+</ul>
