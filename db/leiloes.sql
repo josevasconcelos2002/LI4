@@ -52,7 +52,8 @@ CREATE TABLE Licitacao (
     idLicitacao INT PRIMARY KEY IDENTITY(1,1),
     valor DECIMAL(10, 2) NOT NULL,
     leilao_idLeilao INT NOT NULL,
-    user_NIF VARCHAR(9) 
+    user_NIF VARCHAR(9) ,
+    dataLicitacao DATETIME NOT NULL, 
     FOREIGN KEY (leilao_idLeilao) REFERENCES Leilao(idLeilao),
     FOREIGN KEY (user_NIF) REFERENCES Utilizador(nif)
 );
@@ -83,16 +84,16 @@ INSERT INTO Leilao (licitacaoAtual, precoMinLicitacao, estado, dataInicial, data
 GO
 
 -- Inserir dados na tabela Licitacao
-INSERT INTO Licitacao (valor, leilao_idLeilao, user_NIF) VALUES
-(110.00, 1, '333333333'),
-(210.00, 2, '444444444'),
-(115.00, 1, '555555555');
+INSERT INTO Licitacao (valor, leilao_idLeilao, user_NIF, dataLicitacao) VALUES
+(110.00, 1, '333333333', '2024-01-10 18:01:00'),
+(210.00, 2, '444444444', '2024-01-15 20:05:00'),
+(115.00, 1, '555555555', '2024-01-10 18:01:15');
 GO
 
---SELECT * FROM Produto;
---SELECT * FROM Utilizador;
---SELECT * FROM Leilao;
---SELECT * FROM Licitacao;
+SELECT * FROM Produto;
+SELECT * FROM Utilizador;
+SELECT * FROM Leilao;
+SELECT * FROM Licitacao;
 
 
 

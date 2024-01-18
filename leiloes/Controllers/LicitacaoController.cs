@@ -31,7 +31,7 @@ namespace leiloes.Controllers
         // CREATE -> Processa a criação de uma licitacao
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Valor,IdLeilao,Nif")] Licitacao licitacao)
+        public async Task<IActionResult> Create([Bind("Valor,IdLeilao,Nif,Data")] Licitacao licitacao)
         {
             if (ModelState.IsValid)
             {

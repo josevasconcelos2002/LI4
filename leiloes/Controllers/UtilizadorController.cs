@@ -107,11 +107,12 @@ namespace leiloes.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                // Outros claims conforme necessário
+                new Claim("UserType", user.UserType.ToString()),
+                new Claim("Nif", user.Nif) 
             };
 
             var token = new JwtSecurityToken(
@@ -123,6 +124,7 @@ namespace leiloes.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(string username, string password)
@@ -158,26 +160,24 @@ namespace leiloes.Controllers
         [HttpGet("perfil/{userId}")]
         public async Task<IActionResult> Perfil() 
         {
-            // Extrair o username do utilizador do token JWT
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+            // Extrair o NIF do utilizador do token JWT
+            var nif = User.FindFirst("Nif")?.Value; 
 
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(nif))
             {
                 return Unauthorized();
             }
 
-            // Procurar o utilizador pelo username para obter o NIF (isto seria muito mais simples se o username fosse a chave primária)
+            // Procurar o utilizador pelo NIF
             var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.Nif == nif);
 
             if (utilizador == null)
             {
                 return NotFound();
             }
 
-            var nif = utilizador.Nif;
-
-            // Busca os leilões criados pelo usuário
+            // Procurar os leilões criados pelo usuário
             var leiloesCriados = await _context.Leiloes
                 .Where(l => l.CriadorId == nif)
                 .ToListAsync();
@@ -200,6 +200,38 @@ namespace leiloes.Controllers
             return Ok(perfil);
         }
 
+
+
+        // ---------------------- Adicionar Saldo ----------------------
+        [Authorize]
+        [HttpPost("adicionarSaldo")]
+        public async Task<IActionResult> AdicionarSaldo(decimal quantia)
+        {
+            // Extrair o NIF do utilizador do token JWT
+            var nif = User.FindFirst("Nif")?.Value;
+
+            if (string.IsNullOrEmpty(nif))
+            {
+                return Unauthorized();
+            }
+
+            // Procurar o utilizador pelo NIF
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.Nif == nif);
+
+            if (utilizador == null)
+            {
+                return NotFound();
+            }
+
+            // Adicionar saldo
+            utilizador.Saldo += quantia;
+
+            _context.Update(utilizador);
+            await _context.SaveChangesAsync();
+
+            return Ok("Saldo adicionado com sucesso.");
+        }
 
 
 
