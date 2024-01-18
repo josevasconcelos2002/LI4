@@ -21,7 +21,7 @@ namespace leiloes.Controllers
             return View(licitacoes);
         }
 
-
+        // ---------------------- Criar Licitacao ----------------------
         // CREATE -> Mostra a página de criação de uma licitacao
         public IActionResult Create()
         {
@@ -43,8 +43,6 @@ namespace leiloes.Controllers
             return View(licitacao);
         }
 
-        // Falta implementar: 
-        // Penso que nada. A única cena necessária aqui é criar a licitação
 
 
 
@@ -55,6 +53,13 @@ namespace leiloes.Controllers
 
 
 
+
+
+
+
+
+
+        // ---------------------- TESTES (APAGAR) ----------------------
         // APAGAR -> código de teste para criar uma licitacao
         public async Task<IActionResult> TestCreateLicitacao()
         {

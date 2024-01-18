@@ -13,6 +13,7 @@
         <th>Valor</th>
         <th>Id leilão</th>
         <th>Nif User</th>
+        <th>Data</th>
     </tr>
 
     @foreach (var produto in Model)
@@ -22,6 +23,7 @@
             <td>@produto.Valor</td>
             <td>@produto.leilao_IdLeilao</td>
             <td>@produto.user_Nif</td>
+            <td>@produto.dataLicitacao</td>
         </tr>
     }
 </table>

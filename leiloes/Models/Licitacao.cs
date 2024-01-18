@@ -20,7 +20,7 @@ namespace leiloes.Models
         [StringLength(9)]
         public string user_Nif { get; set; }
 
-        public DateTime Data { get; set; }
+        public DateTime dataLicitacao { get; set; }
 
         // Relações de chave estrangeira
         [ForeignKey("leilao_IdLeilao")]

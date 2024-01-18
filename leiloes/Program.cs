@@ -93,7 +93,7 @@ void VerificarETerminarLeiloes(LeiloesDbContext dbContext)
     {
         // Verificar se houve alguma licitação nos últimos 60 segundos
         var fimDoCounter = leilao.DataFinal.AddSeconds(60);
-        if (!dbContext.Licitacoes.Any(lic => lic.leilao_IdLeilao == leilao.IdLeilao && lic.Data > leilao.DataFinal && lic.Data <= fimDoCounter))
+        if (!dbContext.Licitacoes.Any(lic => lic.leilao_IdLeilao == leilao.IdLeilao && lic.dataLicitacao > leilao.DataFinal && lic.dataLicitacao <= fimDoCounter))
         {
             // Se não houve licitações, atualizar o estado do leilão para "terminado"
             leilao.Estado = "terminado";
