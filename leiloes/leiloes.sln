@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "leiloes", "leiloes.csproj", "{9648ABC9-DBBB-4FA8-A005-22B8EC3DBCEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blazor", "..\blazor\blazor.csproj", "{52D2B735-D33A-4D1C-A77B-5736F82A3B3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blazor", "..\blazor\blazor.csproj", "{52D2B735-D33A-4D1C-A77B-5736F82A3B3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,6 @@
 ﻿@page "/register"
 @inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
 @using blazor.Models
 
@@ -21,10 +22,17 @@
 
 @code {
     private RegisterModel registerModel = new RegisterModel();
+    private HttpClient httpClient;
+
+    protected override void OnInitialized()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+    }
 
     private async Task HandleRegister()
     {
-        var response = await HttpClient.PostAsJsonAsync("api/utilizador", registerModel);
+        var response = await httpClient.PostAsJsonAsync("api/utilizador", registerModel);
         if (response.IsSuccessStatusCode)
         {
             // Registro bem-sucedido, navegar para outra página

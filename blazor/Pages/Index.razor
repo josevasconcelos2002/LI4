@@ -8,18 +8,25 @@
 <div>
     <button @onclick="NavigateToRegister">Registar</button>
     <button @onclick="NavigateToLogin">Entrar</button>
+    <button @onclick="NavigateToList">Lista</button>
 </div>
 
 @code {
     private void NavigateToRegister()
     {
-        // Navegar para a página de registro
-        //NavigationManager.NavigateTo("leiloes/UtilizadorController/Create");
+        // Navegar para a página de registo
+        NavigationManager.NavigateTo("/Register");
     }
 
     private void NavigateToLogin()
     {
         // Navegar para a página de login
-        //NavigationManager.NavigateTo("/UtilizadorLogin");
+        NavigationManager.NavigateTo("/UtilizadorLogin");
+    }
+
+    private void NavigateToList()
+    {
+        // Navegar para a página de login
+        NavigationManager.NavigateTo("/Utilizadores");
     }
 }

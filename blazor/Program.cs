@@ -11,8 +11,9 @@ builder.Services.AddSingleton<WeatherForecastService>();
 // Adiciona serviços SignalR necessários para Blazor
 builder.Services.AddSignalR();
 
-// Adiciona serviços Blazor Server
-builder.Services.AddServerSideBlazor();
+// Adicionar e configurar o HttpClient
+builder.Services.AddHttpClient();
+
 
 var app = builder.Build();
 

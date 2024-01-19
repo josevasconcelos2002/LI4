@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 
 
@@ -14,15 +15,19 @@ namespace leiloes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class UtilizadorController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<UtilizadorController> _logger;
 
-        public UtilizadorController(LeiloesDbContext context, IConfiguration configuration)
+
+        public UtilizadorController(LeiloesDbContext context, IConfiguration configuration, ILogger<UtilizadorController> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
 
@@ -30,6 +35,7 @@ namespace leiloes.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
         {
+            _logger.LogInformation("ola!");
             return await _context.Utilizadores.ToListAsync();
         }
 
@@ -71,6 +77,8 @@ namespace leiloes.Controllers
 
                 _context.Utilizadores.Add(utilizador);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Registro bem-sucedido para o usuário: {Username}", utilizador.Username);
                 return CreatedAtAction(nameof(GetUtilizador), new { nif = utilizador.Nif }, utilizador);
             }
 

@@ -127,6 +127,7 @@ INSERT INTO Licitacao (valor, leilao_idLeilao, user_NIF, dataLicitacao) VALUES
 
 GO
 
+
 SELECT * FROM Produto;
 SELECT * FROM Utilizador;
 SELECT * FROM Leilao;

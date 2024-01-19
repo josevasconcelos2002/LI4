@@ -1,0 +1,34 @@
+﻿@page "/utilizadores"
+@inject IHttpClientFactory HttpClientFactory
+@using blazor.Models
+
+<h3>Utilizadores</h3>
+
+@if (utilizadores == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var utilizador in utilizadores)
+        {
+            <li>@utilizador.Nome - @utilizador.Email</li>
+        }
+    </ul>
+}
+
+@code {
+
+    private List<RegisterModel> utilizadores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpClient = HttpClientFactory.CreateClient();
+
+        // Se o seu back-end e o front-end estão no mesmo aplicativo, você pode não precisar definir o BaseAddress.
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+
+        utilizadores = await httpClient.GetFromJsonAsync<List<RegisterModel>>("api/utilizador");
+    }
+}
