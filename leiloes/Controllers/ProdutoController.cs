@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using leiloes.Models; 
+using leiloes.Models;
 
 namespace leiloes.Controllers
 {
-    public class ProdutoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProdutoController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
 
@@ -13,69 +15,56 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-
-        // Mostra a página dos produtos
-        public IActionResult Index()
+        // GET: api/Produto
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
-            var produtos = _context.Produtos.ToList();
-            return View(produtos);
+            return await _context.Produtos.ToListAsync();
         }
 
-
-        // ---------------------- Criar Produto ----------------------
-        // CREATE -> Mostra a página de criação do produto
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // CREATE -> Processa a criação do produto
+        // POST: api/Produto
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Descricao,Imagem,NumDonosAnt")] Produto produto)
+        public async Task<ActionResult<Produto>> Create([FromBody] Produto produto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Produtos.Add(produto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index"); // Ajustar
+                return BadRequest(ModelState);
             }
 
-            return View(produto);
+            _context.Produtos.Add(produto);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProduto), new { id = produto.IdProduto }, produto);
         }
 
-
-
-        // ---------------------- Eliminar Produto ----------------------
-        // DELETE -> Mostra a página de remoção do produto
-        public async Task<IActionResult> Delete(int? id)
+        // GET: api/Produto/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Produto>> GetProduto(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.IdProduto == id);
+            var produto = await _context.Produtos.FindAsync(id);
             if (produto == null)
             {
                 return NotFound();
             }
-            return View(produto);
+            return produto;
         }
 
-        // DELETE -> Processa a remoção do produto
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // DELETE: api/Produto/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
-            if (produto != null)
+            if (produto == null)
             {
-                _context.Produtos.Remove(produto);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            return RedirectToAction(nameof(Index));
+
+            _context.Produtos.Remove(produto);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
+
 

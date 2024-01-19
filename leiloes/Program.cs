@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<leiloes.LeiloesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 // Configuração do JWT
 builder.Services.AddAuthentication(options =>
@@ -33,6 +33,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
 
 var app = builder.Build();
 
@@ -55,9 +56,9 @@ app.UseRouting();
 app.UseAuthentication(); // Adicione esta linha
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
+
+
 
 app.Run();
 

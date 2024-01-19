@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace leiloes.Controllers
 {
-    public class HomeController : Controller
+    [Route("api/[controller]")] // Define a rota para a API
+    [ApiController] // Indica que este controller é uma API controller
+    public class HomeController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
 
@@ -15,19 +17,20 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<LeilaoViewModel>>> Index()
         {
             var leiloesAtivos = await _context.Leiloes
-                .Where(l => l.Estado == "ativo") // Assumindo que "ativo" é um estado do leilão
+                .Where(l => l.Estado == "ativo") 
                 .Select(l => new LeilaoViewModel
                 {
                     LeilaoId = l.IdLeilao,
-                    NomeItem = l.Produto.Nome, // Assumindo relação entre Leilao e Produto
+                    NomeItem = l.Produto.Nome, 
                     ValorAtualLicitacao = l.LicitacaoAtual
                 })
                 .ToListAsync();
 
-            return View(leiloesAtivos);
+            return Ok(leiloesAtivos);
         }
     }
 

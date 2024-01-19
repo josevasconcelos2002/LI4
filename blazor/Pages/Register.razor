@@ -1,0 +1,38 @@
+﻿@page "/register"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using blazor.Models
+
+
+<h3>Registo</h3>
+
+<EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
+    <InputText @bind-Value="@registerModel.Nif" />
+    <InputText @bind-Value="@registerModel.Nome" />
+    <InputText @bind-Value="@registerModel.Email" />
+    <InputText @bind-Value="@registerModel.Username" />
+    <InputText @bind-Value="@registerModel.Password" type="password" />
+    <InputNumber @bind-Value="@registerModel.UserType" />
+    <InputNumber @bind-Value="@registerModel.Saldo" step="0.01" />
+    <button type="submit">Registar</button>
+</EditForm>
+
+
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private async Task HandleRegister()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/utilizador", registerModel);
+        if (response.IsSuccessStatusCode)
+        {
+            // Registro bem-sucedido, navegar para outra página
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            // Lidar com erros de registro
+        }
+    }
+}

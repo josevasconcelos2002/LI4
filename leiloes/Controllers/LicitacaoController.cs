@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using leiloes.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace leiloes.Controllers
 {
-    public class LicitacaoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LicitacaoController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
 
@@ -13,28 +16,19 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-
-        // Mostra a página das Licitações (isto nem sequer faz sentido e vai sair, mas pode ficar por agora só para testes)
-        public IActionResult Index()
+        // GET: api/Licitacao
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Licitacao>>> GetLicitacoes()
         {
-            var licitacoes = _context.Licitacoes.ToList();
-            return View(licitacoes);
+            return await _context.Licitacoes.ToListAsync();
         }
 
-        // ---------------------- Criar Licitacao ----------------------
-        // CREATE -> Mostra a página de criação de uma licitacao
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // CREATE -> Processa a criação de uma licitacao
+        // POST: api/Licitacao
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Valor,IdLeilao,Data")] Licitacao licitacao)
+        [Authorize] // Garante que apenas usuários autenticados possam criar uma licitação
+        public async Task<ActionResult<Licitacao>> Create([FromBody] Licitacao licitacao)
         {
-            // Extrair o NIF do utilizador do token JWT
-            var nif = User.FindFirst("Nif")?.Value; 
+            var nif = User.FindFirst("Nif")?.Value;
 
             if (string.IsNullOrEmpty(nif))
             {
@@ -47,65 +41,33 @@ namespace leiloes.Controllers
                 return NotFound("Utilizador não encontrado.");
             }
 
-            // Verificar se o saldo é suficiente
             if (utilizador.Saldo < licitacao.Valor)
             {
                 return BadRequest("Saldo insuficiente para a licitação.");
             }
 
-            // Atualizar o saldo do utilizador
             utilizador.Saldo -= licitacao.Valor;
             _context.Update(utilizador);
 
             licitacao.user_Nif = nif;
 
-            // Adicionar a licitação
             _context.Licitacoes.Add(licitacao);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index"); 
+            return CreatedAtAction(nameof(GetLicitacao), new { id = licitacao.IdLicitacao }, licitacao);
         }
-    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ---------------------- TESTES (APAGAR) ----------------------
-        // APAGAR -> código de teste para criar uma licitacao
-        public async Task<IActionResult> TestCreateLicitacao()
+        // GET: api/Licitacao/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Licitacao>> GetLicitacao(int id)
         {
-            var licitacaoTeste = new Licitacao
+            var licitacao = await _context.Licitacoes.FindAsync(id);
+            if (licitacao == null)
             {
-                // Preencha com dados de teste
-                Valor = 1000m,
-                leilao_IdLeilao = 1,
-                user_Nif = "111111111",
-                dataLicitacao = DateTime.Now,
-            };
-
-            _context.Licitacoes.Add(licitacaoTeste);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index"); // Ou retorne algum outro tipo de resposta
+                return NotFound();
+            }
+            return licitacao;
         }
     }
-
-
-
-
-
-
 }
 

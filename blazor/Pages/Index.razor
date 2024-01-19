@@ -1,0 +1,25 @@
+﻿@inject NavigationManager NavigationManager
+
+
+@page "/"
+
+<h1>Bem-vindo ao Sistema de Leilões</h1>
+
+<div>
+    <button @onclick="NavigateToRegister">Registar</button>
+    <button @onclick="NavigateToLogin">Entrar</button>
+</div>
+
+@code {
+    private void NavigateToRegister()
+    {
+        // Navegar para a página de registro
+        //NavigationManager.NavigateTo("leiloes/UtilizadorController/Create");
+    }
+
+    private void NavigateToLogin()
+    {
+        // Navegar para a página de login
+        //NavigationManager.NavigateTo("/UtilizadorLogin");
+    }
+}

@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace leiloes.Controllers
 {
-    public class UtilizadorController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UtilizadorController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
         private readonly IConfiguration _configuration;
@@ -24,25 +26,36 @@ namespace leiloes.Controllers
         }
 
 
+        // GET: api/Utilizador
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
+        {
+            return await _context.Utilizadores.ToListAsync();
+        }
+
+
+        // GET: api/Utilizador/5
+        [HttpGet("{nif}")]
+        public async Task<ActionResult<Utilizador>> GetUtilizador(string nif)
+        {
+            var utilizador = await _context.Utilizadores.FindAsync(nif);
+            if (utilizador == null)
+            {
+                return NotFound();
+            }
+            return utilizador;
+        }
+
+
+
 
 
         // ---------------------- Criar Utilizador (Registo) ----------------------
-        // Mostra a página dos utilizadores
-        public IActionResult Index()
-        {
-            var utilizadores = _context.Utilizadores.ToList();
-            return View(utilizadores);
-        }
 
-        // CREATE -> Mostra a página de criação do utilizador
-        public IActionResult Create()
-        {
-            return View();
-        }
 
+        // POST: api/Utilizador
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nif,Nome,Username,Email,Password")] Utilizador utilizador)
+        public async Task<ActionResult<Utilizador>> Create([FromBody] Utilizador utilizador)
         {
             if (ModelState.IsValid)
             {
@@ -58,44 +71,30 @@ namespace leiloes.Controllers
 
                 _context.Utilizadores.Add(utilizador);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return CreatedAtAction(nameof(GetUtilizador), new { nif = utilizador.Nif }, utilizador);
             }
 
-            return View(utilizador);
+            return NoContent();
         }
 
 
 
         // ---------------------- Eliminar Utilizador (Registo) ----------------------
 
-        // DELETE -> Mostra a página de remoção do utilizador
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(m => m.Nif == id);
-            if (utilizador == null)
-            {
-                return NotFound();
-            }
-            return View(utilizador);
-        }
 
         // DELETE -> Processa a remoção do utilizador
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        { 
-            var utilizador = await _context.Utilizadores.FindAsync(id);
-            if (utilizador != null)
+        [HttpDelete("{nif}")]
+        public async Task<IActionResult> Delete(string nif)
+        {
             {
-                _context.Utilizadores.Remove(utilizador);
-                await _context.SaveChangesAsync();
+                var utilizador = await _context.Utilizadores.FindAsync(nif);
+                if (utilizador != null)
+                {
+                    _context.Utilizadores.Remove(utilizador);
+                    await _context.SaveChangesAsync();
+                }
+                return NoContent();
             }
-            return RedirectToAction(nameof(Index));
         }
 
 
@@ -126,26 +125,35 @@ namespace leiloes.Controllers
         }
 
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string username, string password)
+        public class LoginRequest
         {
-            // Hash da senha fornecida
-            using (var sha256 = SHA256.Create())
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            var user = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.Username == loginRequest.Username);
+
+            if (user != null)
             {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                var hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower().Substring(0, 45);
-
-                var user = await _context.Utilizadores
-                    .FirstOrDefaultAsync(u => u.Username == username && u.Password == hashedPassword);
-
-                if (user != null)
+                using (var sha256 = SHA256.Create())
                 {
-                    var tokenString = GenerateJwtToken(user);
-                    return Ok(new { Token = tokenString });
+                    var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(loginRequest.Password));
+                    var hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower().Substring(0, 45);
+
+                    if (user.Password == hashedPassword)
+                    {
+                        var tokenString = GenerateJwtToken(user);
+                        return Ok(new { Token = tokenString });
+                    }
                 }
             }
 
-            return Unauthorized();
+            return Unauthorized("Credenciais inválidas.");
         }
 
 
@@ -158,7 +166,7 @@ namespace leiloes.Controllers
         // ---------------------- Consultar Perfil ----------------------
         [Authorize]
         [HttpGet("perfil/{userId}")]
-        public async Task<IActionResult> Perfil() 
+        public async Task<IActionResult> Perfil()
         {
             // Extrair o NIF do utilizador do token JWT
             var nif = User.FindFirst("Nif")?.Value; 
@@ -205,7 +213,7 @@ namespace leiloes.Controllers
         // ---------------------- Adicionar Saldo ----------------------
         [Authorize]
         [HttpPost("adicionarSaldo")]
-        public async Task<IActionResult> AdicionarSaldo(decimal quantia)
+        public async Task<IActionResult> AdicionarSaldo([FromBody] decimal quantia)
         {
             // Extrair o NIF do utilizador do token JWT
             var nif = User.FindFirst("Nif")?.Value;
@@ -234,61 +242,6 @@ namespace leiloes.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ---------------------- TESTES (APAGAR) ----------------------
-        // APAGAR -> código de teste para verificar login
-        public async Task<IActionResult> TestLogin()
-        {
-            // Dados do usuário para teste
-            var testeUsername = "luisborges";
-            var testePassword = "pass123";
-
-            // Simula a lógica de verificação de usuário e senha
-            var user = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.Username == testeUsername && u.Password == testePassword); 
-
-            if (user != null)
-            {
-                // Aqui você chamaria o método para gerar o token JWT, como no método de login real
-                var tokenString = GenerateJwtToken(user);
-
-                // Retorna o token gerado ou uma resposta de sucesso
-                return Ok(new { Token = tokenString });
-            }
-
-            // Caso o login falhe
-            return Unauthorized();
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
 
     }
 

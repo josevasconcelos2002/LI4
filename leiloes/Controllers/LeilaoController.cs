@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace leiloes.Controllers
 {
-    public class LeilaoController : Controller
+    [Route("api/[controller]")] // Define a rota para a API
+    [ApiController]
+    public class LeilaoController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
 
@@ -15,79 +17,73 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-        // ---------------------- Criar Leilao ----------------------
-        // CREATE -> Mostra a página de criação do leiloes
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Leilao>>> GetLeiloes()
         {
-            var leiloes = _context.Leiloes.ToList();
-            return View(leiloes);
+            var leiloes = await _context.Leiloes.ToListAsync();
+            return Ok(leiloes);
         }
 
-        // CREATE -> Processa a criação do leilao
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LicitacaoAtual,PrecoMinLicitacao,Estado,DataInicial,DataFinal,CriadorId,ProdutoId")] Leilao leilao)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Leilao>> GetLeilao(int id)
         {
+            var leilao = await _context.Leiloes.FindAsync(id);
 
-
-            if (ModelState.IsValid)
+            if (leilao == null)
             {
-
-                leilao.DataInicial = DateTime.Now; // o leilão começa quando é criado
-                leilao.LicitacaoAtual = 0.00M; // o leilão começa sem licitações
-                leilao.Estado = "pendente"; // o leilão fica em estado pendente até ser aprovado por um administrador
-
-                _context.Leiloes.Add(leilao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index"); // Ajustar
+                return NotFound();
             }
 
+            return leilao;
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Leilao>>> Index()
+        {
+            return await _context.Leiloes.ToListAsync();
+        }
+
+
+
+        // ---------------------- Criar Leilao ----------------------
+        [HttpPost]
+        public async Task<ActionResult<Leilao>> Create([FromBody] Leilao leilao)
+        {
             if (!ModelState.IsValid)
             {
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Erro no campo {state.Key}: {error.ErrorMessage}");
-                    }
-                }
+                return BadRequest(ModelState);
             }
 
-            return View(leilao);
+            leilao.DataInicial = DateTime.Now;
+            leilao.LicitacaoAtual = 0.00M;
+            leilao.Estado = "pendente";
+
+            _context.Leiloes.Add(leilao);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetLeilao), new { id = leilao.IdLeilao }, leilao);
         }
 
 
 
         // ---------------------- Eliminar Leilao ----------------------
         // DELETE -> Mostra a página de remoção do leilao
-        public async Task<IActionResult> Delete(int? id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var leilao = await _context.Leiloes
-                .FirstOrDefaultAsync(m => m.IdLeilao == id);
+            var leilao = await _context.Leiloes.FindAsync(id);
             if (leilao == null)
             {
                 return NotFound();
             }
-            return View(leilao);
+
+            _context.Leiloes.Remove(leilao);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
-        // DELETE -> Processa a remoção do leilao
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var leilao = await _context.Leiloes.FindAsync(id);
-            if (leilao != null)
-            {
-                _context.Leiloes.Remove(leilao);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
 
 
 
@@ -129,7 +125,7 @@ namespace leiloes.Controllers
 
         // ---------------------- Aprovar Leilao ----------------------
         [HttpGet("consultarLeilao/{leilaoId}")]
-        public async Task<IActionResult> ConsultarLeilao(int leilaoId)
+        public async Task<ActionResult> ConsultarLeilao(int leilaoId)
         {
             var leilao = await _context.Leiloes
                 .Include(l => l.Produto) 
@@ -154,56 +150,6 @@ namespace leiloes.Controllers
             };
 
             return Ok(resposta);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ---------------------- TESTES (APAGAR) ----------------------
-        // APAGAR -> código de teste para criar um leilão
-        public async Task<IActionResult> TestCreateLeilao()
-        {
-            var leilaoTeste = new Leilao
-            {
-                // Preencha com dados de teste
-                LicitacaoAtual = 1000m,
-                PrecoMinLicitacao = 500m,
-                Estado = "Ativo",
-                DataInicial = DateTime.Now,
-                DataFinal = DateTime.Now.AddDays(7),
-                CriadorId = "333333333",  // Certifique-se de que este ID exista no seu banco de dados
-                ProdutoId = 1     // Certifique-se de que este ID exista no seu banco de dados
-            };
-
-            _context.Leiloes.Add(leilaoTeste);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index"); // Ou retorne algum outro tipo de resposta
         }
 
     }
