@@ -79,17 +79,17 @@ GO
 
 -- Inserir dados na tabela Utilizador
 INSERT INTO Utilizador (nif, nome, username, email, password, userType, saldo) VALUES 
-(111111111, 'Luis Borges',      'luisborges',       'luisborges@gmail.com',      'pass123', 0, 0.00),
-(222222222, 'Jose Vasconcelos', 'josevasconcelos',  'josevasconcelos@gmail.com', 'pass456', 0, 0.00),
-(333333333, 'Flavio Silva',     'flaviosilva',      'flaviosilva@gmail.com',     'pass789', 0, 0.00),
-(444444444, 'Bento Guimaraes',  'bentoguimaraes',   'bentoguimaraes@gmail.com',  'pass234', 0, 0.00),
-(555555555, 'Tiago Pereira',    'tiagopereira',     'tiagopereira@gmail.com',    'pass678', 0, 0.00),
-(100000000, 'Miguel Porto',     'miguelportoAdmin', 'miguelporto@gmail.com',     'pass000', 1, 0.00),
-(200000000, 'Ana Silva',        'anasilvaUser',     'anasilva@gmail.com',        'pass001', 0, 0.00),
-(300000000, 'João Santos',      'joaosantosUser',   'joaosantos@gmail.com',      'pass002', 0, 0.00),
-(400000000, 'Maria Costa',      'mariacostaUser',   'mariacosta@gmail.com',      'pass003', 0, 0.00),
-(500000000, 'Lucas Pereira',    'lucaspereiraUser', 'lucaspereira@gmail.com',    'pass004', 0, 0.00),
-(600000000, 'Teresa Gomes',     'teresagomesUser',  'teresagomes@gmail.com',     'pass005', 0, 0.00);
+(111111111, 'Luis Borges',      'luisborges',       'luisborges@gmail.com',      '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(222222222, 'Jose Vasconcelos', 'josevasconcelos',  'josevasconcelos@gmail.com', '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(333333333, 'Flavio Silva',     'flaviosilva',      'flaviosilva@gmail.com',     '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(444444444, 'Bento Guimaraes',  'bentoguimaraes',   'bentoguimaraes@gmail.com',  '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(555555555, 'Tiago Pereira',    'tiagopereira',     'tiagopereira@gmail.com',    '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(100000000, 'Miguel Porto',     'miguelportoAdmin', 'miguelporto@gmail.com',     '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 1, 0.00),
+(200000000, 'Ana Silva',        'anasilvaUser',     'anasilva@gmail.com',        '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(300000000, 'João Santos',      'joaosantosUser',   'joaosantos@gmail.com',      '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(400000000, 'Maria Costa',      'mariacostaUser',   'mariacosta@gmail.com',      '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(500000000, 'Lucas Pereira',    'lucaspereiraUser', 'lucaspereira@gmail.com',    '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00),
+(600000000, 'Teresa Gomes',     'teresagomesUser',  'teresagomes@gmail.com',     '9b8769a4a742959a2d0298c36fb70623f2dfacda84362', 0, 0.00);
 GO
 
 -- Inserir dados na tabela Leilao

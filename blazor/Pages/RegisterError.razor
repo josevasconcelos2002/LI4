@@ -1,0 +1,14 @@
+﻿@page "/registerError"
+@inject NavigationManager NavigationManager
+
+<h3>RegisterError</h3>
+<h1>Erro de registo. Tente outra vez</h1>
+
+<button @onclick="GoBack">Voltar ao Registro</button>
+
+@code {
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/register");
+    }
+}

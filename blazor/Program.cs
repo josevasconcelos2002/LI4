@@ -8,10 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-// Adiciona serviços SignalR necessários para Blazor
 builder.Services.AddSignalR();
-
-// Adicionar e configurar o HttpClient
 builder.Services.AddHttpClient();
 
 
