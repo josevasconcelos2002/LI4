@@ -1,0 +1,14 @@
+﻿@page "/loginError"
+@inject NavigationManager NavigationManager
+
+<h3>RegisterError</h3>
+<h1>Erro de autenticação. Tente outra vez</h1>
+
+<button @onclick="GoBack">Voltar</button>
+
+@code {
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

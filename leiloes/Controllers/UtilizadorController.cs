@@ -35,7 +35,6 @@ namespace leiloes.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
         {
-            _logger.LogInformation("ola!");
             return await _context.Utilizadores.ToListAsync();
         }
 
@@ -60,7 +59,7 @@ namespace leiloes.Controllers
 
 
         // POST: api/Utilizador
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult<Utilizador>> Create([FromBody] Utilizador utilizador)
         {
             if (ModelState.IsValid)
@@ -143,6 +142,7 @@ namespace leiloes.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
+            _logger.LogInformation("olá");
             var user = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.Username == loginRequest.Username);
 

@@ -1,0 +1,61 @@
+﻿@page "/login"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject ILogger<Login> Logger
+
+@using blazor.Models
+
+
+<h3>Autenticação</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+    <div>
+        <label for="username">Nome de Usuário:</label>
+        <InputText @bind-Value="@loginModel.Username" id="username" />
+    </div>
+    <div>
+        <label for="password">Senha:</label>
+        <InputText @bind-Value="@loginModel.Password" id="password" type="password" />
+    </div>
+    <button type="submit">Login</button>
+</EditForm>
+<br>
+<button @onclick="GoBack">Voltar</button>
+
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    private HttpClient httpClient;
+
+    protected override void OnInitialized()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+    }
+
+    private async Task HandleLogin()
+    {
+        var response = await httpClient.PostAsJsonAsync("api/utilizador/login", loginModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // login bem-sucedido
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Logger.LogError($"Erro de Login: StatusCode = {response.StatusCode}");
+            Logger.LogError($"Erro de Login: ResponseContent = {await response.Content.ReadAsStringAsync()}");
+
+            // Erro no login
+            NavigationManager.NavigateTo("/loginError");
+        }
+    }
+
+    // Voltar
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

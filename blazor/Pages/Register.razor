@@ -53,8 +53,9 @@
     }
 
     private async Task HandleRegister()
+
     {
-        var response = await httpClient.PostAsJsonAsync("api/utilizador", registerModel);
+        var response = await httpClient.PostAsJsonAsync("api/utilizador/create", registerModel);
         if (response.IsSuccessStatusCode)
         {
             // Registo bem-sucedido
