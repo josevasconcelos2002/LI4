@@ -1,0 +1,53 @@
+﻿@page "/paginicial"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject ILogger<Login> Logger
+
+@using blazor.Models
+
+<h1>Leilões</h1>
+
+@if (response == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var leilao in response)
+        {
+            <li>@leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao</li>
+        }
+    </ul>
+}
+
+@code {
+    private HttpClient httpClient;
+    private IEnumerable<PaginicialModel> response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            httpClient = HttpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri("https://localhost:7295");
+            response = await httpClient.GetFromJsonAsync<IEnumerable<PaginicialModel>>("api/home");
+
+
+            //NavigationManager.NavigateTo("/paginicial");
+        }
+            
+        catch (HttpRequestException e)
+        {
+            Logger.LogError($"Erro ao obter leilões: {e.Message}");
+            // Tratamento de erro, como navegação para uma página de erro
+        }
+    }
+
+    // Voltar
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

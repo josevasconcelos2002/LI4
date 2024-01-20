@@ -38,11 +38,7 @@ namespace leiloes.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Leilao>>> Index()
-        {
-            return await _context.Leiloes.ToListAsync();
-        }
+     
 
 
 
