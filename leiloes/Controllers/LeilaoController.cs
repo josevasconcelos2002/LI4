@@ -119,7 +119,7 @@ namespace leiloes.Controllers
 
 
 
-        // ---------------------- Aprovar Leilao ----------------------
+        // ---------------------- Consultar Leilao ---------------------- (isto é o mesmo que o get)
         [HttpGet("consultarLeilao/{leilaoId}")]
         public async Task<ActionResult> ConsultarLeilao(int leilaoId)
         {

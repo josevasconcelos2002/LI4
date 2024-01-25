@@ -7,34 +7,34 @@
 
 <h3>Registo</h3>
 
-<EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
+<EditForm Model="@utilizadorModel" OnValidSubmit="@HandleRegister">
     <div>
         <label for="nif">NIF:</label>
-        <InputText @bind-Value="@registerModel.Nif" id="nif" />
+        <InputText @bind-Value="@utilizadorModel.Nif" id="nif" />
     </div>
     <div>
         <label for="nome">Nome:</label>
-        <InputText @bind-Value="@registerModel.Nome" id="nome" />
+        <InputText @bind-Value="@utilizadorModel.Nome" id="nome" />
     </div>
     <div>
         <label for="email">Email:</label>
-        <InputText @bind-Value="@registerModel.Email" id="email" />
+        <InputText @bind-Value="@utilizadorModel.Email" id="email" />
     </div>
     <div>
         <label for="username">Nome de Usuário:</label>
-        <InputText @bind-Value="@registerModel.Username" id="username" />
+        <InputText @bind-Value="@utilizadorModel.Username" id="username" />
     </div>
     <div>
         <label for="password">Senha:</label>
-        <InputText @bind-Value="@registerModel.Password" id="password" type="password" />
+        <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" />
     </div>
     <div>
         <label for="userType">Tipo de Usuário:</label>
-        <InputNumber @bind-Value="@registerModel.UserType" id="userType" />
+        <InputNumber @bind-Value="@utilizadorModel.UserType" id="userType" />
     </div>
     <div>
         <label for="saldo">Saldo:</label>
-        <InputNumber @bind-Value="@registerModel.Saldo" id="saldo" step="0.01" />
+        <InputNumber @bind-Value="@utilizadorModel.Saldo" id="saldo" step="0.01" />
     </div>
     <button type="submit">Registar</button>
 </EditForm>
@@ -43,7 +43,7 @@
 
 
 @code {
-    private RegisterModel registerModel = new RegisterModel();
+    private UtilizadorModel utilizadorModel = new UtilizadorModel();
     private HttpClient httpClient;
 
     protected override void OnInitialized()
@@ -55,7 +55,7 @@
     private async Task HandleRegister()
 
     {
-        var response = await httpClient.PostAsJsonAsync("api/utilizador/create", registerModel);
+        var response = await httpClient.PostAsJsonAsync("api/utilizador/create", utilizadorModel);
         if (response.IsSuccessStatusCode)
         {
             // Registo bem-sucedido

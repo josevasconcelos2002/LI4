@@ -1,0 +1,60 @@
+﻿@page "/leilao/{LeilaoId}"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject ILogger<Login> Logger
+
+
+
+@using blazor.Models
+
+<h1>Detalhes do Leilão</h1>
+
+@if (response == null)
+{
+    <p><em>Carregando detalhes do leilão...</em></p>
+}
+else
+{
+    <div>
+        <ul>
+            <li>ID: @response.IdLeilao</li>
+            <li>Lance Atual: @response.LicitacaoAtual</li>
+            <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
+            <li>Status: @response.Estado</li>
+            <li>Data de Início: @response.DataInicial</li>
+            <li>Data Final: @response.DataFinal</li>
+            <li>ID do Criador: @response.CriadorId</li>
+            <li>ID do Produto: @response.ProdutoId</li>
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string LeilaoId { get; set; }
+
+    private HttpClient httpClient;
+    private LeilaoModel response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            httpClient = HttpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri("https://localhost:7295");
+            response = await httpClient.GetFromJsonAsync<LeilaoModel>($"api/leilao/{LeilaoId}");
+        }
+        catch (HttpRequestException e)
+        {
+            Logger.LogError($"Erro ao obter detalhes do leilão: {e.Message}");
+            // Tratamento de erro, como navegação para uma página de erro ou exibição de uma mensagem
+        }
+    }
+
+    // Voltar
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -7,7 +7,7 @@ BEGIN
 END
 GO
 
--- Criar o banco de dados
+-- Criar a base de dados
 CREATE DATABASE leiloes;
 GO
 

@@ -1,4 +1,5 @@
 using blazor.Data;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -10,6 +11,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSignalR();
 builder.Services.AddHttpClient();
+builder.Services.AddBlazoredLocalStorage();
 
 
 var app = builder.Build();

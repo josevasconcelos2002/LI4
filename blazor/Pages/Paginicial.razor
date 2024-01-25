@@ -14,13 +14,23 @@
 }
 else
 {
-    <ul>
+    <div>
         @foreach (var leilao in response)
         {
-            <li>@leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao</li>
+            <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
+                @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
+            </button>
         }
-    </ul>
+    </div>
+
+    <button @onclick="CriarLeilao">Criar Leilao</button>
+    <button @onclick="VerPerfil">Perfil</button>
+    <button @onclick="VerStats">Estatísticas</button>
+    <button @onclick="GoBack">Voltar</button>
+
 }
+
+    
 
 @code {
     private HttpClient httpClient;
@@ -45,6 +55,27 @@ else
         }
     }
 
+    private void NavigateToLeilao(int leilaoId)
+    {
+        NavigationManager.NavigateTo($"/leilao/{leilaoId}");
+    }
+
+    private void CriarLeilao()
+    {
+        NavigationManager.NavigateTo("/criarLeilao");
+    
+    }
+
+    private void VerPerfil()
+    {
+        NavigationManager.NavigateTo("/verPerfil");
+    }
+
+    private void VerStats()
+    {
+        NavigationManager.NavigateTo("/verStats");
+    }
+    
     // Voltar
     private void GoBack()
     {

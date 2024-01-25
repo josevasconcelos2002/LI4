@@ -1,6 +1,6 @@
 ﻿namespace blazor.Models
 {
-    public class RegisterModel
+    public class UtilizadorModel
     {
         public string Nif { get; set; }
         public string Nome { get; set; }
