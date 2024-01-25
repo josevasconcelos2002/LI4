@@ -28,6 +28,15 @@ else
         </ul>
     </div>
 
+    <div>
+        @foreach (var leilao in leiloes)
+        {
+            <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
+                @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
+            </button>
+        }
+    </div>
+
     <button @onclick="AdicionarSaldo">Adicionar Saldo</button>
     <button @onclick="GoBack">Voltar</button>
 }
@@ -40,7 +49,7 @@ else
 @code {
     private HttpClient httpClient;
     private UtilizadorModel user;
-    private IEnumerable<LeilaoModel> leiloes;
+    private IEnumerable<LeilaoSimplesModel> leiloes;
     private String nif;
 
     protected override async Task OnInitializedAsync()
@@ -54,17 +63,13 @@ else
             Logger.LogError($"ESTE É O NIF: {nif}");
             
             user = await httpClient.GetFromJsonAsync<UtilizadorModel>($"api/utilizador/{nif}");
-            
-            // preciso de um método em leilaoController que me dê todos os leilões criados por um utilizador
-            //leiloes = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoModel>>("api/leilao/{");
+            leiloes = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>($"api/leilao/leiloesUser/{nif}");
 
-
-            //NavigationManager.NavigateTo("/paginicial");
         }
 
         catch (HttpRequestException e)
         {
-            Logger.LogError($"Erro ao obter leilões: {e.Message}");
+            Logger.LogError($"Erro: {e.Message}");
             // Tratamento de erro, como navegação para uma página de erro
         }
     }

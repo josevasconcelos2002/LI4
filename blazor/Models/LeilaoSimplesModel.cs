@@ -1,6 +1,6 @@
 ﻿namespace blazor.Models
 {
-    public class PaginicialModel
+    public class LeilaoSimplesModel
     {
         public int LeilaoId { get; set; }
         public string NomeItem { get; set; }

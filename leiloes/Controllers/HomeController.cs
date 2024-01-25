@@ -33,5 +33,4 @@ namespace leiloes.Controllers
             return Ok(leiloesAtivos);
         }
     }
-
 }

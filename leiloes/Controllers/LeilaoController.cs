@@ -119,36 +119,24 @@ namespace leiloes.Controllers
 
 
 
-        // ---------------------- Consultar Leilao ---------------------- (isto é o mesmo que o get)
-        [HttpGet("consultarLeilao/{leilaoId}")]
-        public async Task<ActionResult> ConsultarLeilao(int leilaoId)
+        // ---------------------- Consultar LeiloesUser ---------------------- 
+        [HttpGet("leiloesUser/{nif}")]
+        public async Task<ActionResult<IEnumerable<Leilao>>> LeiloesUser(string nif)
         {
-            var leilao = await _context.Leiloes
-                .Include(l => l.Produto) 
-                .FirstOrDefaultAsync(l => l.IdLeilao == leilaoId);
+            var leiloes = await _context.Leiloes
+                .Where(l => l.CriadorId == nif) 
+                .Select(l => new LeilaoViewModel
+                {
+                    LeilaoId = l.IdLeilao,
+                    NomeItem = l.Produto.Nome,
+                    ValorAtualLicitacao = l.LicitacaoAtual
 
-            if (leilao == null)
-            {
-                return NotFound();
-            }
+                })
+                .ToListAsync();
 
-            // Construir o objeto de resposta
-            var resposta = new
-            {
-                NomeItem = leilao.Produto.Nome,
-                DescricaoItem = leilao.Produto.Descricao,
-                ImagemItem = leilao.Produto.Imagem,
-                NumDonosAnteriores = leilao.Produto.NumDonosAnt,
-                ValorInicialLicitacao = leilao.PrecoMinLicitacao,
-                LicitacaoAtual = leilao.LicitacaoAtual,
-                DataInicio = leilao.DataInicial,
-                DataFim = leilao.DataFinal
-            };
-
-            return Ok(resposta);
+            return Ok(leiloes);
         }
-
     }
-
 }
+
 

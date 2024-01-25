@@ -34,7 +34,7 @@ else
 
 @code {
     private HttpClient httpClient;
-    private IEnumerable<PaginicialModel> response;
+    private IEnumerable<LeilaoSimplesModel> response;
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,7 +42,7 @@ else
         {
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
-            response = await httpClient.GetFromJsonAsync<IEnumerable<PaginicialModel>>("api/home");
+            response = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>("api/home");
 
 
             //NavigationManager.NavigateTo("/paginicial");
