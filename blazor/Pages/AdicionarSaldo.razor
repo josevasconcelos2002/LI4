@@ -1,0 +1,79 @@
+﻿@page "/adicionarSaldo"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@using System.IdentityModel.Tokens.Jwt;
+@inject ILogger<Login> Logger
+
+
+<PageTitle>Adicionar Saldo</PageTitle>
+
+<h3>Adicionar Saldo</h3>
+
+
+<form @onsubmit="AddSaldo">
+    <div class="form-group">
+        <label for="amount">Valor:</label>
+        <input type="number" class="form-control" id="amount" @bind="amount" />
+    </div>
+    <button type="submit">Adicionar Saldo</button>
+    <button @onclick="GoBack">Voltar</button>
+</form>
+
+
+
+
+@code {
+    private decimal amount;
+    private HttpClient httpClient;
+    String nif;
+
+    public class SaldoRequest
+    {
+        public string Nif { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    private async Task AddSaldo()
+    {   
+        try
+        {
+            httpClient = HttpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri("https://localhost:7295");
+
+            nif = await SharedMethods.GetNifFromToken(LocalStorage);
+
+            var saldoRequest = new SaldoRequest
+            {
+                Nif = nif,
+                Amount = amount
+            };
+            Logger.LogError($"NIF:  {saldoRequest.Nif}");
+            Logger.LogError($"AMOUNT:  {saldoRequest.Amount}");
+            var response = await httpClient.PostAsJsonAsync($"api/utilizador/adicionarSaldo", saldoRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/paginicial");
+                var responseString = await response.Content.ReadAsStringAsync();
+                Logger.LogError($"Resposta: {responseString}");
+            }
+            else
+            {
+                Logger.LogError($"ERRO???: {response}");
+            }
+
+        }
+
+        catch (HttpRequestException e)
+        {
+            Logger.LogError($"ERRO!!!: {e.Message}");
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/paginicial");
+    }
+}

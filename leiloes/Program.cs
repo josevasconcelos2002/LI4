@@ -50,18 +50,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseAuthentication(); // Adicione esta linha
+app.UseAuthentication(); 
 app.UseAuthorization();
-
 app.MapControllers();
 
-
-
 app.Run();
-
 
 void CheckLeiloes(object state)
 {
@@ -81,7 +75,6 @@ void CheckLeiloes(object state)
         logger.LogError(ex, "Erro ao verificar e terminar leilões");
     }
 }
-
 
 void VerificarETerminarLeiloes(LeiloesDbContext dbContext)
 {

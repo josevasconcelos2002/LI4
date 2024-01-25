@@ -1,4 +1,4 @@
-﻿@page "/verPerfil"
+﻿@page "/perfil"
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
@@ -59,7 +59,7 @@ else
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
 
-            nif = await GetNifFromToken();
+            nif = await SharedMethods.GetNifFromToken(LocalStorage);
             Logger.LogError($"ESTE É O NIF: {nif}");
             
             user = await httpClient.GetFromJsonAsync<UtilizadorModel>($"api/utilizador/{nif}");
@@ -89,19 +89,6 @@ else
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");
-    }
-
-    private async Task<string> GetNifFromToken()
-    {
-        var token = await LocalStorage.GetItemAsync<string>("jwt_token");
-        if (string.IsNullOrEmpty(token))
-            return null;
-
-        var handler = new JwtSecurityTokenHandler();
-        var jsonToken = handler.ReadJwtToken(token);
-        var nifClaim = jsonToken.Claims.FirstOrDefault(claim => claim.Type.Equals("Nif", StringComparison.OrdinalIgnoreCase));
-
-        return nifClaim?.Value;
     }
 
 }

@@ -28,6 +28,8 @@ else
             <li>ID do Produto: @response.ProdutoId</li>
         </ul>
     </div>
+
+    <button @onclick="GoBack">Voltar</button>
 }
 
 @code {
@@ -55,6 +57,6 @@ else
     // Voltar
     private void GoBack()
     {
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/paginicial");
     }
 }

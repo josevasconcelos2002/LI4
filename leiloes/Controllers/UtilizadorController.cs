@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 
 
+
 namespace leiloes.Controllers
 {
     [Route("api/[controller]")]
@@ -219,32 +220,31 @@ namespace leiloes.Controllers
 
 
         // ---------------------- Adicionar Saldo ----------------------
-        [Authorize]
-        [HttpPost("adicionarSaldo")]
-        public async Task<IActionResult> AdicionarSaldo([FromBody] decimal quantia)
+        public class SaldoRequest
         {
-            // Extrair o NIF do utilizador do token JWT
-            var nif = User.FindFirst("Nif")?.Value;
+            public string Nif { get; set; }
+            public decimal Amount { get; set; }
+        }
 
-            if (string.IsNullOrEmpty(nif))
-            {
-                return Unauthorized();
-            }
-
+        [HttpPost("adicionarSaldo")]
+        public async Task<IActionResult> AdicionarSaldo([FromBody] SaldoRequest request)
+        {
             // Procurar o utilizador pelo NIF
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.Nif == nif);
+            var utilizador = await _context.Utilizadores.FindAsync(request.Nif);
 
+            
             if (utilizador == null)
             {
                 return NotFound();
             }
+            
 
             // Adicionar saldo
-            utilizador.Saldo += quantia;
+            utilizador.Saldo += request.Amount;
 
             _context.Update(utilizador);
             await _context.SaveChangesAsync();
+
 
             return Ok("Saldo adicionado com sucesso.");
         }
