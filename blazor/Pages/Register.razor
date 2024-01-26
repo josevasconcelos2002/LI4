@@ -6,7 +6,6 @@
 
 
 <h3>Registo</h3>
-
 <EditForm Model="@utilizadorModel" OnValidSubmit="@HandleRegister">
     <div>
         <label for="nif">NIF:</label>
@@ -21,20 +20,12 @@
         <InputText @bind-Value="@utilizadorModel.Email" id="email" />
     </div>
     <div>
-        <label for="username">Nome de Usuário:</label>
+        <label for="username">Nome de Utilizador:</label>
         <InputText @bind-Value="@utilizadorModel.Username" id="username" />
     </div>
     <div>
         <label for="password">Senha:</label>
         <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" />
-    </div>
-    <div>
-        <label for="userType">Tipo de Usuário:</label>
-        <InputNumber @bind-Value="@utilizadorModel.UserType" id="userType" />
-    </div>
-    <div>
-        <label for="saldo">Saldo:</label>
-        <InputNumber @bind-Value="@utilizadorModel.Saldo" id="saldo" step="0.01" />
     </div>
     <button type="submit">Registar</button>
 </EditForm>
@@ -53,22 +44,12 @@
     }
 
     private async Task HandleRegister()
-
     {
         var response = await httpClient.PostAsJsonAsync("api/utilizador/create", utilizadorModel);
-        if (response.IsSuccessStatusCode)
-        {
-            // Registo bem-sucedido
-            NavigationManager.NavigateTo("/paginicial");
-        }
-        else
-        {
-            // Erro no registo
-            NavigationManager.NavigateTo("/registerError");
-        }
+        if (response.IsSuccessStatusCode) {NavigationManager.NavigateTo("/paginicial");}
+        else {NavigationManager.NavigateTo("/registerError");}
     }
 
-    // Voltar
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");

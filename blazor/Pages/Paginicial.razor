@@ -2,16 +2,13 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
-@inject ILogger<Login> Logger
+@inject ILogger<Paginicial> Logger
 
 @using blazor.Models
 
 <h1>Leilões</h1>
-
 @if (response == null)
-{
-    <p><em>Carregando...</em></p>
-}
+    { <p><em>Carregando...</em></p>}
 else
 {
     <div>
@@ -22,7 +19,6 @@ else
             </button>
         }
     </div>
-
     <button @onclick="CriarLeilao">Criar Leilao</button>
     <button @onclick="VerPerfil">Perfil</button>
     <button @onclick="VerStats">Estatísticas</button>
@@ -30,7 +26,6 @@ else
 
 }
 
-    
 
 @code {
     private HttpClient httpClient;
@@ -43,40 +38,28 @@ else
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
             response = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>("api/home");
-
-
-            //NavigationManager.NavigateTo("/paginicial");
         }
             
-        catch (HttpRequestException e)
-        {
-            Logger.LogError($"Erro ao obter leilões: {e.Message}");
-            // Tratamento de erro, como navegação para uma página de erro
-        }
+        catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
     }
 
     private void NavigateToLeilao(int leilaoId)
     {
         NavigationManager.NavigateTo($"/leilao/{leilaoId}");
     }
-
     private void CriarLeilao()
     {
         NavigationManager.NavigateTo("/criarLeilao");
     
     }
-
     private void VerPerfil()
     {
         NavigationManager.NavigateTo("/perfil");
     }
-
     private void VerStats()
     {
         NavigationManager.NavigateTo("/verStats");
     }
-    
-    // Voltar
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");

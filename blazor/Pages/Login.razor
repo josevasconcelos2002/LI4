@@ -6,19 +6,17 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
-
 @using blazor.Models
 
 
 <h3>Autenticação</h3>
-
 <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
     <div>
-        <label for="username">Nome de Usuário:</label>
+        <label for="username">Nome de Utilizador:</label>
         <InputText @bind-Value="@loginModel.Username" id="username" />
     </div>
     <div>
-        <label for="password">Senha:</label>
+        <label for="password">Palavra-passe:</label>
         <InputText @bind-Value="@loginModel.Password" id="password" type="password" />
     </div>
     <button type="submit">Login</button>
@@ -44,24 +42,17 @@
         if (response.IsSuccessStatusCode)
         {
             var responseContent = await response.Content.ReadAsStringAsync();
-            Logger.LogInformation($"Resposta do Login: {responseContent}");
-
-            // login bem-sucedido
             var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
             await LocalStorage.SetItemAsync("jwt_token", tokenResponse["token"]);
             NavigationManager.NavigateTo("/paginicial");
         }
         else
         {
-            Logger.LogError($"Erro de Login: StatusCode = {response.StatusCode}");
-            Logger.LogError($"Erro de Login: ResponseContent = {await response.Content.ReadAsStringAsync()}");
-
-            // Erro no login
+            Logger.LogError($"{response}");
             NavigationManager.NavigateTo("/loginError");
         }
     }
 
-    // Voltar
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");

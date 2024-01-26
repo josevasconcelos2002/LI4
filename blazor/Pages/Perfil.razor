@@ -2,21 +2,14 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
-@inject ILogger<Login> Logger
+@inject ILogger<Perfil> Logger
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using System.IdentityModel.Tokens.Jwt;
-
 @using blazor.Models
 
-
-
-
 <h1>Perfil</h1>
-
 @if (user == null)
-{
-    <p><em>Carregando detalhes do user...</em></p>
-}
+    {<p><em>Carregando detalhes do user...</em></p>}
 else
 {
     <div>
@@ -38,12 +31,8 @@ else
     </div>
 
     <button @onclick="AdicionarSaldo">Adicionar Saldo</button>
-    <button @onclick="GoBack">Voltar</button>
+    <button @onclick="GoBack">Página Inicial</button>
 }
-
-
-
-
 
 
 @code {
@@ -60,35 +49,22 @@ else
             httpClient.BaseAddress = new Uri("https://localhost:7295");
 
             nif = await SharedMethods.GetNifFromToken(LocalStorage);
-            Logger.LogError($"ESTE É O NIF: {nif}");
-            
             user = await httpClient.GetFromJsonAsync<UtilizadorModel>($"api/utilizador/{nif}");
             leiloes = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>($"api/leilao/leiloesUser/{nif}");
-
         }
-
-        catch (HttpRequestException e)
-        {
-            Logger.LogError($"Erro: {e.Message}");
-            // Tratamento de erro, como navegação para uma página de erro
-        }
+        catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
     }
 
     private void NavigateToLeilao(int leilaoId)
     {
         NavigationManager.NavigateTo($"/leilao/{leilaoId}");
     }
-
     private void AdicionarSaldo()
     {
         NavigationManager.NavigateTo("/adicionarSaldo");
-
     }
-
-    // Voltar
     private void GoBack()
     {
         NavigationManager.NavigateTo("/");
     }
-
 }

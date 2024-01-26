@@ -2,18 +2,13 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
-@inject ILogger<Login> Logger
-
-
+@inject ILogger<Leilao> Logger
 
 @using blazor.Models
 
 <h1>Detalhes do Leilão</h1>
-
 @if (response == null)
-{
-    <p><em>Carregando detalhes do leilão...</em></p>
-}
+    {<p><em>Carregando detalhes do leilão...</em></p>}
 else
 {
     <div>
@@ -28,8 +23,7 @@ else
             <li>ID do Produto: @response.ProdutoId</li>
         </ul>
     </div>
-
-    <button @onclick="GoBack">Voltar</button>
+    <button @onclick="GoBack">Página Inicial</button>
 }
 
 @code {
@@ -47,14 +41,9 @@ else
             httpClient.BaseAddress = new Uri("https://localhost:7295");
             response = await httpClient.GetFromJsonAsync<LeilaoModel>($"api/leilao/{LeilaoId}");
         }
-        catch (HttpRequestException e)
-        {
-            Logger.LogError($"Erro ao obter detalhes do leilão: {e.Message}");
-            // Tratamento de erro, como navegação para uma página de erro ou exibição de uma mensagem
-        }
+        catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
     }
 
-    // Voltar
     private void GoBack()
     {
         NavigationManager.NavigateTo("/paginicial");
