@@ -34,7 +34,7 @@ namespace leiloes.Controllers
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProduto), new { id = produto.IdProduto }, produto);
+            return Ok(produto);
         }
 
         // GET: api/Produto/5

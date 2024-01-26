@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using leiloes.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace leiloes.Controllers
 {
@@ -11,15 +12,18 @@ namespace leiloes.Controllers
     public class LeilaoController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
+        private readonly ILogger<LeilaoController> _logger;
 
-        public LeilaoController(LeiloesDbContext context)
+        public LeilaoController(LeiloesDbContext context, ILogger<LeilaoController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Leilao>>> GetLeiloes()
         {
+            _logger.LogInformation("olá1");
             var leiloes = await _context.Leiloes.ToListAsync();
             return Ok(leiloes);
         }
@@ -27,6 +31,7 @@ namespace leiloes.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Leilao>> GetLeilao(int id)
         {
+            _logger.LogInformation("olá2");
             var leilao = await _context.Leiloes.FindAsync(id);
 
             if (leilao == null)
@@ -46,14 +51,15 @@ namespace leiloes.Controllers
         [HttpPost]
         public async Task<ActionResult<Leilao>> Create([FromBody] Leilao leilao)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var produto = await _context.Produtos.FindAsync(leilao.ProdutoId);
+            var criador = await _context.Utilizadores.FindAsync(leilao.CriadorId);
 
             leilao.DataInicial = DateTime.Now;
             leilao.LicitacaoAtual = 0.00M;
             leilao.Estado = "pendente";
+            leilao.Produto = produto;
+            leilao.Criador = criador;
+
 
             _context.Leiloes.Add(leilao);
             await _context.SaveChangesAsync();
@@ -68,6 +74,7 @@ namespace leiloes.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
+            _logger.LogInformation("olá4");
             var leilao = await _context.Leiloes.FindAsync(id);
             if (leilao == null)
             {
@@ -88,6 +95,7 @@ namespace leiloes.Controllers
         [HttpPost("aprovarLeilao/{leilaoId}")]
         public async Task<IActionResult> AprovarLeilao(int leilaoId)
         {
+            _logger.LogInformation("olá5");
             // Extrair o UserType do token JWT
             var userType = User.FindFirst("UserType")?.Value;
 
@@ -123,6 +131,7 @@ namespace leiloes.Controllers
         [HttpGet("leiloesUser/{nif}")]
         public async Task<ActionResult<IEnumerable<Leilao>>> LeiloesUser(string nif)
         {
+            _logger.LogInformation("olá6");
             var leiloes = await _context.Leiloes
                 .Where(l => l.CriadorId == nif) 
                 .Select(l => new LeilaoViewModel

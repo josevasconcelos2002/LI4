@@ -144,7 +144,7 @@ namespace leiloes.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            _logger.LogInformation("olá");
+            _logger.LogInformation("oláaa");
             var user = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.Username == loginRequest.Username);
 

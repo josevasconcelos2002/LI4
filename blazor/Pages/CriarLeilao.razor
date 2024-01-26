@@ -1,0 +1,119 @@
+﻿@page "/criarLeilao"
+@inject IHttpClientFactory HttpClientFactory
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject ILogger<CriarLeilao> Logger
+
+
+<h3>Criar Leilão</h3>
+
+<EditForm Model="@leilaoProdutoModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h4>Produto</h4>
+    <div>
+        <label for="nomeProduto">Nome:</label>
+        <InputText id="nomeProduto" @bind-Value="leilaoProdutoModel.Produto.Nome" />
+    </div>
+    <div>
+        <label for="imagem">Caminho da Imagem:</label>
+        <InputText id="imagem" @bind-Value="leilaoProdutoModel.Produto.Imagem" />
+    </div>
+    <div>
+        <label for="descricao">Descrição:</label>
+        <InputTextArea id="descricao" @bind-Value="leilaoProdutoModel.Produto.Descricao" />
+    </div>
+    <div>
+        <label for="numDonos">Número de Donos Anteriores:</label>
+        <InputNumber id="numDonos" @bind-Value="leilaoProdutoModel.Produto.NumeroDonos" />
+    </div>
+
+    <h4>Leilão</h4>
+    <div>
+        <label for="precoMinLicitacao">Preço Mínimo de Licitação:</label>
+        <InputNumber id="precoMinLicitacao" @bind-Value="leilaoProdutoModel.Leilao.PrecoMinLicitacao" class="form-control" />
+    </div>
+    <div>
+        <label for="dataFinal">Data Final:</label>
+        <InputDate id="dataFinal" @bind-Value="leilaoProdutoModel.Leilao.DataFinal" />
+    </div>
+
+    <button type="submit">Criar Leilão e Produto</button>
+</EditForm>
+
+@code {
+    private LeilaoProdutoModel leilaoProdutoModel = new LeilaoProdutoModel();
+    private HttpClient httpClient;
+
+    private async Task HandleValidSubmit()
+    {
+
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+        var nif = await SharedMethods.GetNifFromToken(LocalStorage);
+
+        var produtoResponse = await httpClient.PostAsJsonAsync("api/produto", leilaoProdutoModel.Produto);
+        if (!produtoResponse.IsSuccessStatusCode)
+        {
+            Logger.LogError($"PRODUTO: {produtoResponse}");
+        }
+
+        var produtoCriado = await produtoResponse.Content.ReadFromJsonAsync<Produto>();
+        leilaoProdutoModel.Leilao.ProdutoId = produtoCriado.IdProduto; // Definir o ID do produto no leilão
+        leilaoProdutoModel.Leilao.CriadorId = nif;
+
+        // Em seguida, criar o leilão
+
+        // Verificação dos dados a serem enviados
+        Logger.LogError($"LEILAO produtoId: {leilaoProdutoModel.Leilao.ProdutoId}");
+        Logger.LogError($"LEILAO criadorId: {leilaoProdutoModel.Leilao.CriadorId}");
+        Logger.LogError($"LEILAO preco: {leilaoProdutoModel.Leilao.PrecoMinLicitacao}");
+        Logger.LogError($"LEILAO data: {leilaoProdutoModel.Leilao.DataFinal}");
+
+        var leilaoResponse = await httpClient.PostAsJsonAsync("api/leilao", leilaoProdutoModel.Leilao);
+        if (leilaoResponse.IsSuccessStatusCode)
+        {
+            // Tratamento de sucesso, como redirecionar para outra página
+            NavigationManager.NavigateTo("/paginicial");
+        }
+        else if (leilaoResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var errorMessage = await leilaoResponse.Content.ReadAsStringAsync();
+            Logger.LogError($"AAA:{errorMessage}"); // "Erro de ModelState no método Create"
+        }
+    }
+
+    public class LeilaoProdutoModel
+    {
+        public Produto Produto { get; set; } = new Produto();
+        public Leilao Leilao { get; set; } = new Leilao();
+    }
+
+    public class Produto
+    {
+        public int IdProduto { get; set; }
+        public string Nome { get; set; }
+        public string Imagem { get; set; }
+        public string Descricao { get; set; }
+        public int NumeroDonos { get; set; }
+    }
+
+    public class Leilao
+    {
+        public int ProdutoId { get; set; }
+        public string CriadorId { get; set; }
+        public decimal PrecoMinLicitacao { get; set; }
+        public DateTime DataFinal { get; set; }
+    }
+
+    public class BadRequestResponseModel
+    {
+        public string Message { get; set; }
+        public List<string> ModelStateErrors { get; set; }
+    }
+
+}
