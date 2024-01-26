@@ -77,14 +77,15 @@ namespace leiloes.Controllers
 
                 _context.Utilizadores.Add(utilizador);
                 await _context.SaveChangesAsync();
-
-                _logger.LogInformation("Registro bem-sucedido para o usuário: {Username}", utilizador.Username);
-                return CreatedAtAction(nameof(GetUtilizador), new { nif = utilizador.Nif }, utilizador);
+                var tokenString = GenerateJwtToken(utilizador);
+                return Ok(new { Token = tokenString });
             }
 
             return NoContent();
         }
 
+
+   
 
 
         // ---------------------- Eliminar Utilizador (Registo) ----------------------

@@ -1,6 +1,7 @@
 ﻿@page "/register"
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 @using blazor.Models
 
@@ -46,7 +47,14 @@
     private async Task HandleRegister()
     {
         var response = await httpClient.PostAsJsonAsync("api/utilizador/create", utilizadorModel);
-        if (response.IsSuccessStatusCode) {NavigationManager.NavigateTo("/paginicial");}
+        if (response.IsSuccessStatusCode) 
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+            await LocalStorage.SetItemAsync("jwt_token", tokenResponse["token"]);
+            NavigationManager.NavigateTo("/paginicial");
+        }
+
         else {NavigationManager.NavigateTo("/registerError");}
     }
 
