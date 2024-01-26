@@ -27,24 +27,35 @@ namespace leiloes.Controllers
         [HttpPost]
         public async Task<ActionResult<Licitacao>> Create([FromBody] Licitacao licitacao)
         {
-            licitacao.Leilao = await _context.Leiloes.FindAsync(licitacao.leilao_IdLeilao);
-            licitacao.Utilizador = await _context.Utilizadores.FindAsync(licitacao.user_Nif);
-
+            var leilao = await _context.Leiloes.FindAsync(licitacao.leilao_IdLeilao);
+            var user = await _context.Utilizadores.FindAsync(licitacao.user_Nif);
+            licitacao.Leilao = leilao;
+            licitacao.Utilizador = user;
             var nif = licitacao.user_Nif;
-
             var utilizador = await _context.Utilizadores.FindAsync(nif);
 
-            
+            // Utilizador não tem saldo
             if (utilizador.Saldo < licitacao.Valor)
             {
                 return BadRequest("Saldo insuficiente para a licitação.");
             }
-            
+
+            // Licitação mais baixa/igual à última
+            if (licitacao.Valor < leilao.LicitacaoAtual)
+            {
+                return BadRequest("Licitação demasiado baixa.");
+            }
+
+            // Licitação no próprio leilão
+            if (leilao.CriadorId == user.Nif)
+            {
+                return BadRequest("Licitação inválida");
+            }
+
 
             utilizador.Saldo -= licitacao.Valor;
             _context.Update(utilizador);
 
-            var leilao = await _context.Leiloes.FindAsync(licitacao.leilao_IdLeilao);
             leilao.LicitacaoAtual = licitacao.Valor;
             _context.Update(leilao);
 

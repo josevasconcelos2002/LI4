@@ -1,0 +1,14 @@
+﻿@page "/licitacaoError"
+@inject NavigationManager NavigationManager
+
+<h3>Licitação Error</h3>
+<h1>Ocorreu um erro na licitação. Por favor, tente outra vez</h1>
+
+<button @onclick="GoBack">Voltar à Página Inicial</button>
+
+@code {
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/paginicial");
+    }
+}

@@ -84,6 +84,8 @@ else
         else
         {
             Logger.LogError($"ERRO:{responseLicitacao}");
+            NavigationManager.NavigateTo("/licitacaoError");
+
         }
 
     }
