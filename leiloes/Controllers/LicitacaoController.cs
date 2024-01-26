@@ -25,31 +25,28 @@ namespace leiloes.Controllers
 
         // POST: api/Licitacao
         [HttpPost]
-        [Authorize] // Garante que apenas usuários autenticados possam criar uma licitação
         public async Task<ActionResult<Licitacao>> Create([FromBody] Licitacao licitacao)
         {
-            var nif = User.FindFirst("Nif")?.Value;
+            licitacao.Leilao = await _context.Leiloes.FindAsync(licitacao.leilao_IdLeilao);
+            licitacao.Utilizador = await _context.Utilizadores.FindAsync(licitacao.user_Nif);
 
-            if (string.IsNullOrEmpty(nif))
-            {
-                return Unauthorized();
-            }
+            var nif = licitacao.user_Nif;
 
             var utilizador = await _context.Utilizadores.FindAsync(nif);
-            if (utilizador == null)
-            {
-                return NotFound("Utilizador não encontrado.");
-            }
 
+            /*
             if (utilizador.Saldo < licitacao.Valor)
             {
                 return BadRequest("Saldo insuficiente para a licitação.");
             }
+            */
 
             utilizador.Saldo -= licitacao.Valor;
             _context.Update(utilizador);
 
-            licitacao.user_Nif = nif;
+            var leilao = await _context.Leiloes.FindAsync(licitacao.leilao_IdLeilao);
+            leilao.LicitacaoAtual = licitacao.Valor;
+            _context.Update(leilao);
 
             _context.Licitacoes.Add(licitacao);
             await _context.SaveChangesAsync();

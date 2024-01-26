@@ -3,12 +3,16 @@
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
 @inject ILogger<Leilao> Logger
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 @using blazor.Models
 
+
 <h1>Detalhes do Leilão</h1>
 @if (response == null)
-    {<p><em>Carregando detalhes do leilão...</em></p>}
+{
+    <p><em>Carregando detalhes do leilão...</em></p>
+}
 else
 {
     <div>
@@ -23,8 +27,18 @@ else
             <li>ID do Produto: @response.ProdutoId</li>
         </ul>
     </div>
+
+    <form @onsubmit="Licitar">
+        <div class="form-group">
+            <label for="amount">Valor:</label>
+            <input type="number" class="form-control" id="amount" @bind="licitacao.Valor" />
+        </div>
+        <button type="submit">Licitar</button>
+    </form>
+
     <button @onclick="GoBack">Página Inicial</button>
 }
+
 
 @code {
     [Parameter]
@@ -32,6 +46,8 @@ else
 
     private HttpClient httpClient;
     private LeilaoModel response;
+    private Licitacao licitacao = new Licitacao();
+    private Licitacao responseLicitacao = new Licitacao();
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,8 +60,43 @@ else
         catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
     }
 
+    private async Task Licitar()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+        var nif = await SharedMethods.GetNifFromToken(LocalStorage);
+
+        licitacao.leilao_IdLeilao = int.Parse(LeilaoId);
+        licitacao.user_Nif = nif;
+        licitacao.dataLicitacao = DateTime.Now;
+
+        Logger.LogError($"valor: {licitacao.Valor}");
+        Logger.LogError($"idleilao: {licitacao.leilao_IdLeilao}");
+        Logger.LogError($"idleilao: {licitacao.user_Nif}");
+        Logger.LogError($"idleilao: {licitacao.dataLicitacao}");
+
+        var responseLicitacao = await httpClient.PostAsJsonAsync("api/licitacao", licitacao);
+        if (responseLicitacao.IsSuccessStatusCode)
+        {
+            Logger.LogError("SUCESSO");
+            NavigationManager.NavigateTo("/paginicial");
+        }
+        else
+        {
+            Logger.LogError($"ERRO:{responseLicitacao}");
+        }
+
+    }
+
     private void GoBack()
     {
         NavigationManager.NavigateTo("/paginicial");
+    }
+    public class Licitacao
+    {
+        public decimal Valor { get; set; }
+        public int leilao_IdLeilao { get; set; }
+        public string user_Nif { get; set; }
+        public DateTime dataLicitacao { get; set; }
     }
 }
