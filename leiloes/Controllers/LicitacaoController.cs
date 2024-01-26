@@ -34,12 +34,12 @@ namespace leiloes.Controllers
 
             var utilizador = await _context.Utilizadores.FindAsync(nif);
 
-            /*
+            
             if (utilizador.Saldo < licitacao.Valor)
             {
                 return BadRequest("Saldo insuficiente para a licitação.");
             }
-            */
+            
 
             utilizador.Saldo -= licitacao.Valor;
             _context.Update(utilizador);
