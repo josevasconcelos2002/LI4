@@ -68,7 +68,7 @@
         </div>
 
         <button @onclick="Aprovar">Aprovar</button>
-        //<button @onclick="Eliminar">Eliminar</button>
+        <button @onclick="Eliminar">Eliminar</button>
         <button @onclick="GoBack">Página Inicial</button>
     }
 </body>
@@ -114,6 +114,50 @@
 
     }
 
+    private async Task Eliminar()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+
+        // Exclui o leilão e obtém o ID do produto
+        var responseLeilao = await httpClient.DeleteAsync($"api/leilao/{LeilaoId}");
+
+        if (responseLeilao.IsSuccessStatusCode)
+        {
+            // Extrai o ID do produto como uma string e depois converte para int
+            var produtoIdString = await responseLeilao.Content.ReadAsStringAsync();
+            int produtoId;
+            if (int.TryParse(produtoIdString, out produtoId))
+            {
+                // Agora, exclui o produto usando o ID obtido
+                var responseProduto = await httpClient.DeleteAsync($"api/produto/{produtoId}");
+
+                if (responseProduto.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/paginicialAdmin");
+                }
+                else
+                {
+                    // Trata o erro ao tentar excluir o produto
+                    NavigationManager.NavigateTo("/erroAoExcluirProduto");
+                }
+            }
+            else
+            {
+                // Trata o erro na conversão do ID do produto
+                NavigationManager.NavigateTo("/erroConversaoIdProduto");
+            }
+        }
+        else
+        {
+            // Trata o erro ao tentar excluir o leilão
+            NavigationManager.NavigateTo("/erroAoExcluirLeilao");
+        }
+    }
+
+
+
+
     // falta a cena de eliminar o leilão
 
     private void GoBack()
@@ -128,3 +172,4 @@
         public DateTime dataLicitacao { get; set; }
     }
 }
+

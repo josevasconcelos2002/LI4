@@ -72,7 +72,7 @@ namespace leiloes.Controllers
         // ---------------------- Eliminar Leilao ----------------------
         // DELETE -> Mostra a página de remoção do leilao
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<int>> Delete(int id)
         {
             _logger.LogInformation("olá4");
             var leilao = await _context.Leiloes.FindAsync(id);
@@ -81,11 +81,14 @@ namespace leiloes.Controllers
                 return NotFound();
             }
 
+            int produtoId = leilao.ProdutoId; // Armazenando o ID do produto antes de deletar o leilão
+
             _context.Leiloes.Remove(leilao);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return produtoId; // Devolve o ID do produto associado ao leilão deletado
         }
+
 
 
 
