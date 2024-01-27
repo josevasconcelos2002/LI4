@@ -8,45 +8,93 @@
 @inject ILogger<CriarLeilao> Logger
 
 
-<h3>Criar Leilão</h3>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
 
-<EditForm Model="@leilaoProdutoModel" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    .form-group {
+        margin-bottom: 15px;
+    }
 
-    <h4>Produto</h4>
-    <div>
-        <label for="nomeProduto">Nome:</label>
-        <InputText id="nomeProduto" @bind-Value="leilaoProdutoModel.Produto.Nome" />
-    </div>
-    <div>
-        <label for="imagem">Caminho da Imagem:</label>
-        <InputText id="imagem" @bind-Value="leilaoProdutoModel.Produto.Imagem" />
-    </div>
-    <div>
-        <label for="descricao">Descrição:</label>
-        <InputTextArea id="descricao" @bind-Value="leilaoProdutoModel.Produto.Descricao" />
-    </div>
-    <div>
-        <label for="numDonos">Número de Donos Anteriores:</label>
-        <InputNumber id="numDonos" @bind-Value="leilaoProdutoModel.Produto.NumeroDonos" />
-    </div>
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
 
-    <h4>Leilão</h4>
-    <div>
-        <label for="precoMinLicitacao">Preço Mínimo de Licitação:</label>
-        <InputNumber id="precoMinLicitacao" @bind-Value="leilaoProdutoModel.Leilao.PrecoMinLicitacao" class="form-control" />
-    </div>
-    <div>
-        <label for="dataFinal">Data e Hora Final:</label>
-        <input type="datetime-local" id="dataFinal"
-               value="@leilaoProdutoModel.Leilao.DataFinal.ToString("yyyy-MM-ddTHH:mm")"
-               @onchange="UpdateDataFinal" />
-    </div>
+    input, textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Garante que padding não aumente o tamanho do input */
+    }
 
+    button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px; /* Espaço acima do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Ocupa a linha inteira */
+        margin: 10px auto; /* Centraliza o botão */
+    }
 
-    <button type="submit">Criar Leilão e Produto</button>
-</EditForm>
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<body>
+    <h3>Criar Leilão</h3>
+
+    <EditForm Model="@leilaoProdutoModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="nomeProduto">Nome:</label>
+            <InputText id="nomeProduto" @bind-Value="leilaoProdutoModel.Produto.Nome" />
+        </div>
+        <div class="form-group">
+            <label for="imagem">Caminho da Imagem:</label>
+            <InputText id="imagem" @bind-Value="leilaoProdutoModel.Produto.Imagem" />
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição:</label>
+            <InputTextArea id="descricao" @bind-Value="leilaoProdutoModel.Produto.Descricao" />
+        </div>
+        <div class="form-group">
+            <label for="numDonos">Número de Donos Anteriores:</label>
+            <InputNumber id="numDonos" @bind-Value="leilaoProdutoModel.Produto.NumeroDonos" />
+        </div>
+
+        <div class="form-group">
+            <label for="precoMinLicitacao">Preço Mínimo de Licitação:</label>
+            <InputNumber id="precoMinLicitacao" @bind-Value="leilaoProdutoModel.Leilao.PrecoMinLicitacao" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="dataFinal">Data e Hora Final:</label>
+            <input type="datetime-local" id="dataFinal"
+                   value="@leilaoProdutoModel.Leilao.DataFinal.ToString("yyyy-MM-ddTHH:mm")"
+                   @onchange="UpdateDataFinal" />
+        </div>
+
+        <button type="submit">Criar Leilão</button>
+        <button @onclick="GoBack">Página Inicial</button>
+    </EditForm>
+</body>
+
 
 @code {
     private LeilaoProdutoModel leilaoProdutoModel = new LeilaoProdutoModel();
@@ -94,6 +142,11 @@
     {
         DateTime selectedDateTime = DateTime.Parse(e.Value.ToString());
         leilaoProdutoModel.Leilao.DataFinal = selectedDateTime;
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/paginicial");
     }
 
     public class LeilaoProdutoModel

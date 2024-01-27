@@ -9,20 +9,71 @@
 @using blazor.Models
 
 
-<h3>Autenticação</h3>
-<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
-    <div>
-        <label for="username">Nome de Utilizador:</label>
-        <InputText @bind-Value="@loginModel.Username" id="username" />
-    </div>
-    <div>
-        <label for="password">Palavra-passe:</label>
-        <InputText @bind-Value="@loginModel.Password" id="password" type="password" />
-    </div>
-    <button type="submit">Login</button>
-</EditForm>
-<br>
-<button @onclick="GoBack">Voltar</button>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Altura da viewport */
+        margin: 0;
+    }
+    .autenticacao-container {
+        background-color: #f5f5dc; /* Bege claro */
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        width: 300px;
+        margin: 0 auto; /* Centralizar horizontalmente */
+        text-align: center;
+    }
+
+    .autenticacao-label {
+        font-weight: bold;
+    }
+
+    .autenticacao-input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .autenticacao-button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .autenticacao-button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<div class="autenticacao-container">
+    <h3>Autenticação</h3>
+    <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+        <div>
+            <label for="username" class="autenticacao-label">Nome de Utilizador:</label>
+            <InputText @bind-Value="@loginModel.Username" id="username" class="autenticacao-input" />
+        </div>
+        <div>
+            <label for="password" class="autenticacao-label">Palavra-passe:</label>
+            <InputText @bind-Value="@loginModel.Password" id="password" type="password" class="autenticacao-input" />
+        </div>
+        <button type="submit" class="autenticacao-button">Login</button>
+    </EditForm>
+    <br>
+    <button @onclick="GoBack" class="autenticacao-button">Voltar</button>
+</div>
+
+
 
 
 @code {

@@ -6,25 +6,94 @@
 
 @using blazor.Models
 
-<h1>Leilões</h1>
-@if (response == null)
-    { <p><em>Carregando...</em></p>}
-else
-{
-    <div>
-        @foreach (var leilao in response)
-        {
-            <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
-                @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
-            </button>
-        }
-    </div>
-    <button @onclick="CriarLeilao">Criar Leilao</button>
-    <button @onclick="VerPerfil">Perfil</button>
-    <button @onclick="VerStats">Estatísticas</button>
-    <button @onclick="GoBack">Voltar</button>
 
-}
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+    }
+
+    .leiloes-container {
+        text-align: center;
+        width: 100%;
+    }
+
+    .leilao-button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 15px 20px; /* Aumenta o padding para um tamanho maior */
+        margin: 10px auto; /* Centraliza o botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px; /* Aumenta o tamanho da fonte */
+        display: block; /* Faz o botão ocupar a linha inteira */
+        width: 100%; /* Largura aumentada */
+        min-width: 300px; /* Largura mínima */
+    }
+
+        .leilao-button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        width: 80%;
+        flex-wrap: wrap; /* Quebra a linha caso necessário */
+    }
+
+        .action-buttons button {
+            background-color: #007BFF; /* Azul */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px; /* Espaçamento entre os botões */
+        }
+
+            .action-buttons button:hover {
+                background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            }
+</style>
+
+<body>
+    <h1>Leilões</h1>
+    @if (response == null)
+    {
+        <p><em>Carregando...</em></p>
+    }
+    else
+    {
+        <div class="leiloes-container">
+            @foreach (var leilao in response)
+            {
+                <div>
+                    <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
+                        @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
+                    </button>
+                </div>
+            }
+        </div>
+        <div class="action-buttons">
+            <button @onclick="CriarLeilao">Criar Leilao</button>
+            <button @onclick="VerPerfil">Perfil</button>
+            <button @onclick="VerStats">Estatísticas</button>
+            <button @onclick="GoBack">Voltar</button>
+        </div>
+    }
+</body>
+
+
+
+
 
 
 @code {

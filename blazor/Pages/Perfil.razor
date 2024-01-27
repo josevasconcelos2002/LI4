@@ -7,32 +7,90 @@
 @using System.IdentityModel.Tokens.Jwt;
 @using blazor.Models
 
-<h1>Perfil</h1>
-@if (user == null)
-    {<p><em>Carregando detalhes do user...</em></p>}
-else
-{
-    <div>
-        <ul>
-            <li>Nome: @user.Nome</li>
-            <li>Email: @user.Email</li>
-            <li>Nome de Utilizador: @user.Username</li>
-            <li>Saldo: @user.Saldo</li>
-        </ul>
-    </div>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
 
-    <div>
-        @foreach (var leilao in leiloes)
-        {
-            <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
-                @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
-            </button>
+    ul {
+        list-style-type: none; /* Remove os marcadores de lista */
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 10px; /* Espaço entre os itens da lista */
+    }
+
+    .leilao-button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px auto; /* Centraliza e adiciona espaço ao redor do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Faz o botão ocupar a linha inteira */
+    }
+
+        .leilao-button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
         }
-    </div>
 
-    <button @onclick="AdicionarSaldo">Adicionar Saldo</button>
-    <button @onclick="GoBack">Página Inicial</button>
-}
+    button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px; /* Espaço acima do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Ocupa a linha inteira */
+        margin: 10px auto; /* Centraliza o botão */
+    }
+
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<body>
+    <h1>Perfil</h1>
+    @if (user == null)
+    {
+        <p><em>Carregando detalhes do usuário...</em></p>
+    }
+    else
+    {
+        <div>
+            <ul>
+                <li>Nome: @user.Nome</li>
+                <li>Email: @user.Email</li>
+                <li>Nome de Utilizador: @user.Username</li>
+                <li>Saldo: @user.Saldo</li>
+            </ul>
+        </div>
+
+        <div>
+            @foreach (var leilao in leiloes)
+            {
+                <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
+                    @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
+                </button>
+            }
+        </div>
+
+        <button @onclick="AdicionarSaldo">Adicionar Saldo</button>
+        <button @onclick="GoBack">Página Inicial</button>
+    }
+</body>
 
 
 @code {

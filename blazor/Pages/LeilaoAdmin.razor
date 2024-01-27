@@ -8,31 +8,70 @@
 @using blazor.Models
 
 
-<h1>Detalhes do Leilão</h1>
-@if (response == null)
-{
-    <p><em>Carregando detalhes do leilão...</em></p>
-}
-else
-{
-    <div>
-        <ul>
-            <li>ID: @response.IdLeilao</li>
-            <li>Lance Atual: @response.LicitacaoAtual</li>
-            <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
-            <li>Status: @response.Estado</li>
-            <li>Data de Início: @response.DataInicial</li>
-            <li>Data Final: @response.DataFinal</li>
-            <li>ID do Criador: @response.CriadorId</li>
-            <li>ID do Produto: @response.ProdutoId</li>
-        </ul>
-    </div>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
 
+    ul {
+        list-style-type: none; /* Remove os marcadores de lista */
+        padding: 0;
+    }
 
-    <button @onclick="Aprovar">Aprovar</button>
-    //<button @onclick="Eliminar">Eliminar</button>
-    <button @onclick="GoBack">Página Inicial</button>
-}
+    li {
+        margin-bottom: 10px; /* Espaço entre os itens da lista */
+    }
+
+    button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px; /* Espaço acima do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Ocupa a linha inteira */
+        margin: 10px auto; /* Centraliza o botão */
+    }
+
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<body>
+    <h1>Detalhes do Leilão</h1>
+    @if (response == null)
+    {
+        <p><em>Carregando detalhes do leilão...</em></p>
+    }
+    else
+    {
+        <div>
+            <ul>
+                <li>ID: @response.IdLeilao</li>
+                <li>Lance Atual: @response.LicitacaoAtual</li>
+                <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
+                <li>Status: @response.Estado</li>
+                <li>Data de Início: @response.DataInicial</li>
+                <li>Data Final: @response.DataFinal</li>
+                <li>ID do Criador: @response.CriadorId</li>
+                <li>ID do Produto: @response.ProdutoId</li>
+            </ul>
+        </div>
+
+        <button @onclick="Aprovar">Aprovar</button>
+        //<button @onclick="Eliminar">Eliminar</button>
+        <button @onclick="GoBack">Página Inicial</button>
+    }
+</body>
 
 
 @code {
@@ -74,6 +113,8 @@ else
         }
 
     }
+
+    // falta a cena de eliminar o leilão
 
     private void GoBack()
     {

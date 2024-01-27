@@ -8,36 +8,94 @@
 @using blazor.Models
 
 
-<h1>Detalhes do Leilão</h1>
-@if (response == null)
-{
-    <p><em>Carregando detalhes do leilão...</em></p>
-}
-else
-{
-    <div>
-        <ul>
-            <li>ID: @response.IdLeilao</li>
-            <li>Lance Atual: @response.LicitacaoAtual</li>
-            <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
-            <li>Status: @response.Estado</li>
-            <li>Data de Início: @response.DataInicial</li>
-            <li>Data Final: @response.DataFinal</li>
-            <li>ID do Criador: @response.CriadorId</li>
-            <li>ID do Produto: @response.ProdutoId</li>
-        </ul>
-    </div>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
 
-    <form @onsubmit="Licitar">
-        <div class="form-group">
-            <label for="amount">Valor:</label>
-            <input type="number" class="form-control" id="amount" @bind="licitacao.Valor" />
+    ul {
+        list-style-type: none; /* Remove os marcadores de lista */
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 10px; /* Espaço entre os itens da lista */
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="number"], .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Garante que padding não aumente o tamanho do input */
+    }
+
+    button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px; /* Espaço acima do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Ocupa a linha inteira */
+        margin: 10px auto; /* Centraliza o botão */
+    }
+
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<body>
+    <h1>Detalhes do Leilão</h1>
+    @if (response == null)
+    {
+        <p><em>Carregando detalhes do leilão...</em></p>
+    }
+    else
+    {
+        <div>
+            <ul>
+                <li>ID: @response.IdLeilao</li>
+                <li>Lance Atual: @response.LicitacaoAtual</li>
+                <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
+                <li>Status: @response.Estado</li>
+                <li>Data de Início: @response.DataInicial</li>
+                <li>Data Final: @response.DataFinal</li>
+                <li>ID do Criador: @response.CriadorId</li>
+                <li>ID do Produto: @response.ProdutoId</li>
+            </ul>
         </div>
-        <button type="submit">Licitar</button>
-    </form>
 
-    <button @onclick="GoBack">Página Inicial</button>
-}
+        <form @onsubmit="Licitar">
+            <div class="form-group">
+                <label for="amount">Valor:</label>
+                <input type="number" class="form-control" id="amount" @bind="licitacao.Valor" />
+            </div>
+            <button type="submit">Licitar</button>
+        </form>
+
+        <button @onclick="GoBack">Página Inicial</button>
+    }
+</body>
 
 
 @code {

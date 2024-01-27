@@ -1,14 +1,52 @@
-﻿@inject NavigationManager NavigationManager
+﻿@page "/"
+@inject NavigationManager NavigationManager
 
 
-@page "/"
 
-<h1>Bem-vindo ao Sistema de Leilões</h1>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Altura da viewport */
+        margin: 0;
+    }
 
-<div>
-    <button @onclick="NavigateToRegister">Registar</button>
-    <button @onclick="NavigateToLogin">Entrar</button>
+    .titulo {
+        margin-bottom: 200px; /* Afasta o título do topo */
+        font-size: 48px;
+        color: #333;
+    }
+
+    /* Estilo dos botões */
+    .botoes {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centraliza os botões horizontalmente */
+        gap: 20px; /* Espaço entre os botões */
+    }
+
+    .botao {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 22px;
+    }
+</style>
+
+<h1 class="titulo">Bem-vindo ao Sistema de Leilões</h1>
+
+<div class="botoes">
+    <button @onclick="NavigateToRegister" class="botao">Registar</button>
+    <button @onclick="NavigateToLogin" class="botao">Entrar</button>
 </div>
+
+
 
 @code {
     private void NavigateToRegister()

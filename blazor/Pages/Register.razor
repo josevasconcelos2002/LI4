@@ -6,32 +6,83 @@
 @using blazor.Models
 
 
-<h3>Registo</h3>
-<EditForm Model="@utilizadorModel" OnValidSubmit="@HandleRegister">
-    <div>
-        <label for="nif">NIF:</label>
-        <InputText @bind-Value="@utilizadorModel.Nif" id="nif" />
-    </div>
-    <div>
-        <label for="nome">Nome:</label>
-        <InputText @bind-Value="@utilizadorModel.Nome" id="nome" />
-    </div>
-    <div>
-        <label for="email">Email:</label>
-        <InputText @bind-Value="@utilizadorModel.Email" id="email" />
-    </div>
-    <div>
-        <label for="username">Nome de Utilizador:</label>
-        <InputText @bind-Value="@utilizadorModel.Username" id="username" />
-    </div>
-    <div>
-        <label for="password">Senha:</label>
-        <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" />
-    </div>
-    <button type="submit">Registar</button>
-</EditForm>
-<br>
-<button @onclick="GoBack">Voltar</button>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Altura da viewport */
+        margin: 0;
+    }
+    .registro-container {
+        background-color: #f5f5dc; /* Bege claro */
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        width: 300px;
+        margin: 0 auto; /* Centralizar horizontalmente */
+        text-align: center;
+    }
+
+    .registro-label {
+        font-weight: bold;
+    }
+
+    .registro-input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .registro-button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .registro-button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<div class="registro-container">
+    <h3>Registo</h3>
+    <EditForm Model="@utilizadorModel" OnValidSubmit="@HandleRegister">
+        <div>
+            <label for="nif" class="registro-label">NIF:</label>
+            <InputText @bind-Value="@utilizadorModel.Nif" id="nif" class="registro-input" />
+        </div>
+        <div>
+            <label for="nome" class="registro-label">Nome:</label>
+            <InputText @bind-Value="@utilizadorModel.Nome" id="nome" class="registro-input" />
+        </div>
+        <div>
+            <label for="email" class="registro-label">Email:</label>
+            <InputText @bind-Value="@utilizadorModel.Email" id="email" class="registro-input" />
+        </div>
+        <div>
+            <label for="username" class="registro-label">Nome de Utilizador:</label>
+            <InputText @bind-Value="@utilizadorModel.Username" id="username" class="registro-input" />
+        </div>
+        <div>
+            <label for="password" class="registro-label">Senha:</label>
+            <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" class="registro-input" />
+        </div>
+        <button type="submit" class="registro-button">Registar</button>
+    </EditForm>
+    <br>
+    <button @onclick="GoBack" class="registro-button">Voltar</button>
+</div>
+
+
 
 
 @code {

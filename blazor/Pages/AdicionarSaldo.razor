@@ -8,17 +8,66 @@
 @using System.IdentityModel.Tokens.Jwt;
 
 
-<PageTitle>Adicionar Saldo</PageTitle>
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
 
-<h3>Adicionar Saldo</h3>
-<form @onsubmit="AddSaldo">
-    <div class="form-group">
-        <label for="amount">Valor:</label>
-        <input type="number" class="form-control" id="amount" @bind="amount" />
-    </div>
-    <button type="submit">Adicionar Saldo</button>
-    <button @onclick="GoBack">Página Inicial</button>
-</form>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="number"], .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Garante que padding não aumente o tamanho do input */
+    }
+
+    button {
+        background-color: #007BFF; /* Azul */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px; /* Espaço acima do botão */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block; /* Ocupa a linha inteira */
+        margin: 10px auto; /* Centraliza o botão */
+    }
+
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+</style>
+
+<body>
+    <PageTitle>Adicionar Saldo</PageTitle>
+
+    <h3>Adicionar Saldo</h3>
+    <form @onsubmit="AddSaldo">
+        <div class="form-group">
+            <label for="amount">Valor:</label>
+            <input type="number" class="form-control" id="amount" @bind="amount" />
+        </div>
+        <button type="submit">Adicionar Saldo</button>
+        <button @onclick="GoBack">Página Inicial</button>
+    </form>
+</body>
 
 
 
