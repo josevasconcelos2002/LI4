@@ -44,7 +44,17 @@
             var responseContent = await response.Content.ReadAsStringAsync();
             var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
             await LocalStorage.SetItemAsync("jwt_token", tokenResponse["token"]);
-            NavigationManager.NavigateTo("/paginicial");
+
+            var userType = await SharedMethods.GetUserTypeFromToken(LocalStorage);
+
+            if (userType == "1")
+            {
+                NavigationManager.NavigateTo("/paginicialAdmin");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/paginicial");
+            }
         }
         else
         {

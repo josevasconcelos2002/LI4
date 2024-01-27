@@ -1,0 +1,89 @@
+﻿@page "/leilaoAdmin/{LeilaoId}"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject ILogger<Leilao> Logger
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@using blazor.Models
+
+
+<h1>Detalhes do Leilão</h1>
+@if (response == null)
+{
+    <p><em>Carregando detalhes do leilão...</em></p>
+}
+else
+{
+    <div>
+        <ul>
+            <li>ID: @response.IdLeilao</li>
+            <li>Lance Atual: @response.LicitacaoAtual</li>
+            <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
+            <li>Status: @response.Estado</li>
+            <li>Data de Início: @response.DataInicial</li>
+            <li>Data Final: @response.DataFinal</li>
+            <li>ID do Criador: @response.CriadorId</li>
+            <li>ID do Produto: @response.ProdutoId</li>
+        </ul>
+    </div>
+
+
+    <button @onclick="Aprovar">Aprovar</button>
+    //<button @onclick="Eliminar">Eliminar</button>
+    <button @onclick="GoBack">Página Inicial</button>
+}
+
+
+@code {
+    [Parameter]
+    public string LeilaoId { get; set; }
+
+    private HttpClient httpClient;
+    private LeilaoModel response;
+    private Licitacao licitacao = new Licitacao();
+    private Licitacao responseLicitacao = new Licitacao();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            httpClient = HttpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri("https://localhost:7295");
+            response = await httpClient.GetFromJsonAsync<LeilaoModel>($"api/leilao/{LeilaoId}");
+        }
+        catch (HttpRequestException e) { Logger.LogError($"{e.Message}"); }
+    }
+
+    private async Task Aprovar()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+        var nif = await SharedMethods.GetNifFromToken(LocalStorage);
+
+        var responseLicitacao = await httpClient.PostAsJsonAsync($"api/leilao/aprovarLeilao/{LeilaoId}", LeilaoId);
+        if (responseLicitacao.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/paginicialAdmin");
+        }
+        else
+        {
+            Logger.LogError($"ERRO:{responseLicitacao}");
+            NavigationManager.NavigateTo("/aprovarError");
+
+        }
+
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/paginicial");
+    }
+    public class Licitacao
+    {
+        public decimal Valor { get; set; }
+        public int leilao_IdLeilao { get; set; }
+        public string user_Nif { get; set; }
+        public DateTime dataLicitacao { get; set; }
+    }
+}

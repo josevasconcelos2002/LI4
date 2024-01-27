@@ -1,0 +1,54 @@
+﻿@page "/paginicialAdmin"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject ILogger<Paginicial> Logger
+
+@using blazor.Models
+
+<h1>Leilões</h1>
+@if (response == null)
+{
+     <p><em>Carregando...</em></p>
+}
+else
+{
+    <div>
+        @foreach (var leilao in response)
+        {
+            <button @onclick="() => NavigateToLeilao(leilao.LeilaoId)" class="leilao-button">
+                @leilao.LeilaoId - @leilao.NomeItem - @leilao.ValorAtualLicitacao
+            </button>
+        }
+    </div>
+    <button @onclick="GoBack">Voltar</button>
+
+}
+
+
+@code {
+    private HttpClient httpClient;
+    private IEnumerable<LeilaoSimplesModel> response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            httpClient = HttpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri("https://localhost:7295");
+            response = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>("api/home/pendentes");
+        }
+
+        catch (HttpRequestException e) { Logger.LogError($"{e.Message}"); }
+    }
+
+    private void NavigateToLeilao(int leilaoId)
+    {
+        NavigationManager.NavigateTo($"/leilaoAdmin/{leilaoId}");
+    }
+   
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

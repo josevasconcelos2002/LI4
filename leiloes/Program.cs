@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Configurar o timer para verificar os leilões
-var timer = new Timer(CheckLeiloes, null, 0, 60000); // Executa a cada 1 minuto
+var timer = new Timer(CheckLeiloes, null, 0, 60000); // Executa a cada minutos
 
 
 // Configure o pipeline de requisições HTTP.
@@ -85,9 +85,9 @@ void VerificarETerminarLeiloes(LeiloesDbContext dbContext)
 
     foreach (var leilao in leiloesParaVerificar)
     {
-        // Verificar se houve alguma licitação nos últimos 60 segundos
-        var fimDoCounter = leilao.DataFinal.AddSeconds(60);
-        if (!dbContext.Licitacoes.Any(lic => lic.leilao_IdLeilao == leilao.IdLeilao && lic.dataLicitacao > leilao.DataFinal && lic.dataLicitacao <= fimDoCounter))
+        // Verificar se houve alguma licitação nos últimos 300 segundos
+        var inicioDoIntervalo = DateTime.Now.AddMinutes(-5);
+        if (!dbContext.Licitacoes.Any(lic => lic.leilao_IdLeilao == leilao.IdLeilao && lic.dataLicitacao >= inicioDoIntervalo))
         {
             // Se não houve licitações, atualizar o estado do leilão para "terminado"
             leilao.Estado = "terminado";

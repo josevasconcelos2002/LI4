@@ -38,9 +38,12 @@
         <InputNumber id="precoMinLicitacao" @bind-Value="leilaoProdutoModel.Leilao.PrecoMinLicitacao" class="form-control" />
     </div>
     <div>
-        <label for="dataFinal">Data Final:</label>
-        <InputDate id="dataFinal" @bind-Value="leilaoProdutoModel.Leilao.DataFinal" />
+        <label for="dataFinal">Data e Hora Final:</label>
+        <input type="datetime-local" id="dataFinal"
+               value="@leilaoProdutoModel.Leilao.DataFinal.ToString("yyyy-MM-ddTHH:mm")"
+               @onchange="UpdateDataFinal" />
     </div>
+
 
     <button type="submit">Criar Leilão e Produto</button>
 </EditForm>
@@ -85,6 +88,12 @@
             var errorMessage = await leilaoResponse.Content.ReadAsStringAsync();
             Logger.LogError($"AAA:{errorMessage}"); // "Erro de ModelState no método Create"
         }
+    }
+
+    private void UpdateDataFinal(ChangeEventArgs e)
+    {
+        DateTime selectedDateTime = DateTime.Parse(e.Value.ToString());
+        leilaoProdutoModel.Leilao.DataFinal = selectedDateTime;
     }
 
     public class LeilaoProdutoModel

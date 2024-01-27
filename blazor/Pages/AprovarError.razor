@@ -1,0 +1,14 @@
+﻿@page "/aprovarError"
+@inject NavigationManager NavigationManager
+
+<h3>Aprovar Error</h3>
+<h1>Erro ao aprovar o leilão. Tente outra vez</h1>
+
+<button @onclick="GoBack">Voltar</button>
+
+@code {
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/paginicialAdmin");
+    }
+}

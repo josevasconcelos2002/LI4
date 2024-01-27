@@ -21,16 +21,32 @@ namespace leiloes.Controllers
         public async Task<ActionResult<IEnumerable<LeilaoViewModel>>> Index()
         {
             var leiloesAtivos = await _context.Leiloes
-                .Where(l => l.Estado == "ativo") 
+                .Where(l => l.Estado == "ativo")
                 .Select(l => new LeilaoViewModel
                 {
                     LeilaoId = l.IdLeilao,
-                    NomeItem = l.Produto.Nome, 
+                    NomeItem = l.Produto.Nome,
                     ValorAtualLicitacao = l.LicitacaoAtual
                 })
                 .ToListAsync();
 
             return Ok(leiloesAtivos);
+        }
+
+        [HttpGet("pendentes")]
+        public async Task<ActionResult<IEnumerable<LeilaoViewModel>>> GetLeiloesPendentes()
+        {
+            var leiloesPendentes = await _context.Leiloes
+                .Where(l => l.Estado == "pendente")
+                .Select(l => new LeilaoViewModel
+                {
+                    LeilaoId = l.IdLeilao,
+                    NomeItem = l.Produto.Nome,
+                    ValorAtualLicitacao = l.LicitacaoAtual
+                })
+                .ToListAsync();
+            
+            return Ok(leiloesPendentes);
         }
     }
 }

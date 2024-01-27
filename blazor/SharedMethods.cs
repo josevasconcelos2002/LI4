@@ -18,4 +18,17 @@ public static class SharedMethods
 
         return nifClaim?.Value;
     }
+
+    public static async Task<string> GetUserTypeFromToken(ILocalStorageService localStorage)
+    {
+        var token = await localStorage.GetItemAsync<string>("jwt_token");
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadJwtToken(token);
+        var userTypeClaim = jsonToken.Claims.FirstOrDefault(claim => claim.Type.Equals("UserType", StringComparison.OrdinalIgnoreCase));
+
+        return userTypeClaim?.Value;
+    }
 }

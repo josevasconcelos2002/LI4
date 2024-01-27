@@ -91,18 +91,10 @@ namespace leiloes.Controllers
 
 
         // ---------------------- Aprovar Leilao ----------------------
-        [Authorize]
         [HttpPost("aprovarLeilao/{leilaoId}")]
         public async Task<IActionResult> AprovarLeilao(int leilaoId)
         {
             _logger.LogInformation("olá5");
-            // Extrair o UserType do token JWT
-            var userType = User.FindFirst("UserType")?.Value;
-
-            if (userType != "1")
-            {
-                return Unauthorized("Acesso negado: usuário não é administrador.");
-            }
 
             var leilao = await _context.Leiloes
                 .FirstOrDefaultAsync(l => l.IdLeilao == leilaoId);
