@@ -32,7 +32,7 @@ namespace leiloes.Controllers
         }
 
 
-        // GET: api/Utilizador
+        // ---------------------- Lista de utilizadores ----------------------
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
         {
@@ -40,7 +40,7 @@ namespace leiloes.Controllers
         }
 
 
-        // GET: api/Utilizador/5
+        // ---------------------- Utilizador através do nif ----------------------
         [HttpGet("{nif}")]
         public async Task<ActionResult<Utilizador>> GetUtilizador(string nif)
         {
@@ -53,18 +53,22 @@ namespace leiloes.Controllers
         }
 
 
-
-
-
         // ---------------------- Criar Utilizador (Registo) ----------------------
-
-
-        // POST: api/Utilizador
         [HttpPost("create")]
         public async Task<ActionResult<Utilizador>> Create([FromBody] Utilizador utilizador)
         {
             if (ModelState.IsValid)
             {
+                // Verificar se Nif, Username e Email são únicos
+                bool nifExists = await _context.Utilizadores.AnyAsync(u => u.Nif == utilizador.Nif);
+                bool usernameExists = await _context.Utilizadores.AnyAsync(u => u.Username == utilizador.Username);
+                bool emailExists = await _context.Utilizadores.AnyAsync(u => u.Email == utilizador.Email);
+
+                if (nifExists || usernameExists || emailExists)
+                {
+                    return BadRequest("Nif, Username ou Email já existem na base de dados.");
+                }
+
                 using (var sha256 = SHA256.Create())
                 {
                     var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(utilizador.Password));
@@ -85,13 +89,7 @@ namespace leiloes.Controllers
         }
 
 
-   
-
-
-        // ---------------------- Eliminar Utilizador (Registo) ----------------------
-
-
-        // DELETE -> Processa a remoção do utilizador
+        // ---------------------- Eliminar Utilizador ----------------------
         [HttpDelete("{nif}")]
         public async Task<IActionResult> Delete(string nif)
         {
@@ -105,8 +103,6 @@ namespace leiloes.Controllers
                 return NoContent();
             }
         }
-
-
 
 
         // ---------------------- Autenticar Utilizador ----------------------
@@ -132,14 +128,7 @@ namespace leiloes.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
-        public class LoginRequest
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-        }
-
+   
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
@@ -167,12 +156,6 @@ namespace leiloes.Controllers
         }
 
 
-
-        // ---------------------- Desconectar Utilizador ----------------------
-        // Aparentemente não é preciso nada aqui
-
-
-
         // ---------------------- Consultar Perfil ----------------------
         [Authorize]
         [HttpGet("perfil/{userId}")]
@@ -195,16 +178,13 @@ namespace leiloes.Controllers
                 return NotFound();
             }
 
-            // Procurar os leilões criados pelo usuário
             var leiloesCriados = await _context.Leiloes
                 .Where(l => l.CriadorId == nif)
                 .ToListAsync();
 
-            // Dividir os leilões em ativos e não ativos
             var leiloesAtivos = leiloesCriados.Where(l => l.Estado == "Ativo").ToList();
             var leiloesNaoAtivos = leiloesCriados.Where(l => l.Estado != "Ativo").ToList();
 
-            // Construir o objeto de perfil
             var perfil = new
             {
                 NomeCompleto = utilizador.Nome,
@@ -219,35 +199,41 @@ namespace leiloes.Controllers
         }
 
 
-
         // ---------------------- Adicionar Saldo ----------------------
-        public class SaldoRequest
-        {
-            public string Nif { get; set; }
-            public decimal Amount { get; set; }
-        }
-
         [HttpPost("adicionarSaldo")]
         public async Task<IActionResult> AdicionarSaldo([FromBody] SaldoRequest request)
         {
-            // Procurar o utilizador pelo NIF
             var utilizador = await _context.Utilizadores.FindAsync(request.Nif);
-
-            
             if (utilizador == null)
             {
                 return NotFound();
             }
-            
 
-            // Adicionar saldo
+            if(request.Amount < 0)
+            {
+                return BadRequest("Não é possível adicionar saldo negativo");
+            }
+
             utilizador.Saldo += request.Amount;
-
             _context.Update(utilizador);
             await _context.SaveChangesAsync();
 
-
             return Ok("Saldo adicionado com sucesso.");
+        }
+
+
+        // ---------------------- Classe usada no login ----------------------
+        public class LoginRequest
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
+        // ---------------------- Classe usada na adição de saldo ----------------------
+        public class SaldoRequest
+        {
+            public string Nif { get; set; }
+            public decimal Amount { get; set; }
         }
 
 

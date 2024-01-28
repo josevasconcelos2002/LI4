@@ -9,15 +9,16 @@
 @inject IWebHostEnvironment Environment
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
-        text-align: center; /* Alinha o texto ao centro */
+        align-items: center; 
+        text-align: center; 
     }
 
     .form-group {
@@ -35,30 +36,31 @@
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        box-sizing: border-box; /* Garante que padding não aumente o tamanho do input */
+        box-sizing: border-box; 
     }
 
     button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin-top: 20px; /* Espaço acima do botão */
+        margin-top: 20px;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        display: block; /* Ocupa a linha inteira */
-        margin: 10px auto; /* Centraliza o botão */
+        display: block;
+        margin: 10px auto; 
     }
 
         button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3; 
         }
 </style>
 
+
+<!-- HTML -->
 <body>
     <h3>Criar Leilão</h3>
-
     <EditForm Model="@leilaoProdutoModel" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -79,7 +81,6 @@
             <label for="numDonos">Número de Donos Anteriores:</label>
             <InputNumber id="numDonos" @bind-Value="leilaoProdutoModel.Produto.NumeroDonos" />
         </div>
-
         <div class="form-group">
             <label for="precoMinLicitacao">Preço Mínimo de Licitação:</label>
             <InputNumber id="precoMinLicitacao" @bind-Value="leilaoProdutoModel.Leilao.PrecoMinLicitacao" class="form-control" />
@@ -90,77 +91,62 @@
                    value="@leilaoProdutoModel.Leilao.DataFinal.ToString("yyyy-MM-ddTHH:mm")"
                    @onchange="UpdateDataFinal" />
         </div>
-
         <button type="submit">Criar Leilão</button>
         <button @onclick="GoBack">Página Inicial</button>
     </EditForm>
 </body>
 
 
+<!-- C# -->
 @code {
     private LeilaoProdutoModel leilaoProdutoModel = new LeilaoProdutoModel();
     private HttpClient httpClient;
 
     private async Task HandleValidSubmit()
     {
-
         httpClient = HttpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri("https://localhost:7295");
         var nif = await SharedMethods.GetNifFromToken(LocalStorage);
 
+        // Criar o produto
         var produtoResponse = await httpClient.PostAsJsonAsync("api/produto", leilaoProdutoModel.Produto);
         if (!produtoResponse.IsSuccessStatusCode)
         {
-            Logger.LogError($"PRODUTO: {produtoResponse}");
+            NavigationManager.NavigateTo("/criarLeilaoError");
         }
 
+        // Obter o ID do produto para poder criar o leilão
         var produtoCriado = await produtoResponse.Content.ReadFromJsonAsync<Produto>();
-        leilaoProdutoModel.Leilao.ProdutoId = produtoCriado.IdProduto; // Definir o ID do produto no leilão
+        leilaoProdutoModel.Leilao.ProdutoId = produtoCriado.IdProduto;
         leilaoProdutoModel.Leilao.CriadorId = nif;
 
-        // Em seguida, criar o leilão
-
-        // Verificação dos dados a serem enviados
-        Logger.LogError($"LEILAO produtoId: {leilaoProdutoModel.Leilao.ProdutoId}");
-        Logger.LogError($"LEILAO criadorId: {leilaoProdutoModel.Leilao.CriadorId}");
-        Logger.LogError($"LEILAO preco: {leilaoProdutoModel.Leilao.PrecoMinLicitacao}");
-        Logger.LogError($"LEILAO data: {leilaoProdutoModel.Leilao.DataFinal}");
-
+        // Criar o leilão
         var leilaoResponse = await httpClient.PostAsJsonAsync("api/leilao", leilaoProdutoModel.Leilao);
         if (leilaoResponse.IsSuccessStatusCode)
         {
-            // Tratamento de sucesso, como redirecionar para outra página
             NavigationManager.NavigateTo("/paginicial");
         }
-        else if (leilaoResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        else 
         {
-            var errorMessage = await leilaoResponse.Content.ReadAsStringAsync();
-            Logger.LogError($"AAA:{errorMessage}"); // "Erro de ModelState no método Create"
+            NavigationManager.NavigateTo("/criarLeilaoError");
         }
     }
 
-
+    // Método para tratar da imagem
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         var file = e.File;
         if (file != null)
         {
-            // Gera um nome de arquivo único para evitar conflitos
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
-
-            // Combina o caminho da pasta 'wwwroot/img' com o novo nome de arquivo
             var path = Path.Combine(Environment.WebRootPath, "img", fileName);
-
-            // Salva o arquivo no sistema de arquivos do servidor
             await using var fs = new FileStream(path, FileMode.Create);
             await file.OpenReadStream().CopyToAsync(fs);
-
-            // Atualiza o modelo com o caminho relativo para a imagem
             leilaoProdutoModel.Produto.Imagem = $"/img/{fileName}";
         }
     }
 
-
+    // Método para tratar da data
     private void UpdateDataFinal(ChangeEventArgs e)
     {
         DateTime selectedDateTime = DateTime.Parse(e.Value.ToString());

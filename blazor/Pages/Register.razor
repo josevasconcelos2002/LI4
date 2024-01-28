@@ -6,31 +6,32 @@
 @using blazor.Models
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Altura da viewport */
+        height: 100vh; 
         margin: 0;
     }
-    .registro-container {
-        background-color: #f5f5dc; /* Bege claro */
+    .registo-container {
+        background-color: #f5f5dc; 
         padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
         width: 300px;
-        margin: 0 auto; /* Centralizar horizontalmente */
+        margin: 0 auto; 
         text-align: center;
     }
 
-    .registro-label {
+    .registo-label {
         font-weight: bold;
     }
 
-    .registro-input {
+    .registo-input {
         width: 100%;
         padding: 10px;
         margin-bottom: 10px;
@@ -38,8 +39,8 @@
         border-radius: 3px;
     }
 
-    .registro-button {
-        background-color: #007BFF; /* Azul */
+    .registo-button {
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
@@ -47,44 +48,45 @@
         cursor: pointer;
         font-size: 16px;
     }
-
-        .registro-button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        .registo-button:hover {
+            background-color: #0056b3; 
         }
 </style>
 
-<div class="registro-container">
+
+<!-- HTML -->
+<div class="registo-container">
     <h3>Registo</h3>
     <EditForm Model="@utilizadorModel" OnValidSubmit="@HandleRegister">
         <div>
-            <label for="nif" class="registro-label">NIF:</label>
-            <InputText @bind-Value="@utilizadorModel.Nif" id="nif" class="registro-input" />
+            <label for="nif" class="registo-label">NIF:</label>
+            <InputText @bind-Value="@utilizadorModel.Nif" id="nif" class="registo-input" />
         </div>
         <div>
-            <label for="nome" class="registro-label">Nome:</label>
-            <InputText @bind-Value="@utilizadorModel.Nome" id="nome" class="registro-input" />
+            <label for="nome" class="registo-label">Nome:</label>
+            <InputText @bind-Value="@utilizadorModel.Nome" id="nome" class="registo-input" />
         </div>
         <div>
-            <label for="email" class="registro-label">Email:</label>
-            <InputText @bind-Value="@utilizadorModel.Email" id="email" class="registro-input" />
+            <label for="email" class="registo-label">Email:</label>
+            <InputText @bind-Value="@utilizadorModel.Email" id="email" class="registo-input" />
         </div>
         <div>
-            <label for="username" class="registro-label">Nome de Utilizador:</label>
-            <InputText @bind-Value="@utilizadorModel.Username" id="username" class="registro-input" />
+            <label for="username" class="registo-label">Nome de Utilizador:</label>
+            <InputText @bind-Value="@utilizadorModel.Username" id="username" class="registo-input" />
         </div>
         <div>
-            <label for="password" class="registro-label">Senha:</label>
-            <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" class="registro-input" />
+            <label for="password" class="registo-label">Senha:</label>
+            <InputText @bind-Value="@utilizadorModel.Password" id="password" type="password" class="registo-input" />
         </div>
-        <button type="submit" class="registro-button">Registar</button>
+        <button type="submit" class="registo-button">Registar</button>
     </EditForm>
     <br>
-    <button @onclick="GoBack" class="registro-button">Voltar</button>
+    <button @onclick="GoBack" class="registo-button">Voltar</button>
 </div>
 
 
 
-
+<!-- C# -->
 @code {
     private UtilizadorModel utilizadorModel = new UtilizadorModel();
     private HttpClient httpClient;
@@ -105,7 +107,6 @@
             await LocalStorage.SetItemAsync("jwt_token", tokenResponse["token"]);
             NavigationManager.NavigateTo("/paginicial");
         }
-
         else {NavigationManager.NavigateTo("/registerError");}
     }
 

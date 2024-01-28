@@ -7,20 +7,22 @@
 
 @using blazor.Models
 
+
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
+        align-items: center; 
     }
     .leilao-container {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         padding: 20px;
-        margin: 0 auto; /* Centraliza o container */
-        max-width: 800px; /* Largura máxima do container */
+        margin: 0 auto; 
+        max-width: 800px; 
     }
     .detalhes-leilao {
         display: flex;
@@ -85,12 +87,13 @@
 </style>
 
 
+<!-- HTML -->
 <body>
     <div class="leilao-container">
         <h1>Detalhes do Leilão</h1>
         @if (response == null)
         {
-            <p><em>Carregando detalhes do leilão...</em></p>
+            <p><em>A carregar detalhes do leilão...</em></p>
         }
         else
         {
@@ -135,8 +138,7 @@
 </body>
 
 
-
-
+<!-- C# -->
 @code {
     [Parameter]
     public string LeilaoId { get; set; }
@@ -169,20 +171,13 @@
         licitacao.user_Nif = nif;
         licitacao.dataLicitacao = DateTime.Now;
 
-        Logger.LogError($"valor: {licitacao.Valor}");
-        Logger.LogError($"idleilao: {licitacao.leilao_IdLeilao}");
-        Logger.LogError($"idleilao: {licitacao.user_Nif}");
-        Logger.LogError($"idleilao: {licitacao.dataLicitacao}");
-
         var responseLicitacao = await httpClient.PostAsJsonAsync("api/licitacao", licitacao);
         if (responseLicitacao.IsSuccessStatusCode)
         {
-            Logger.LogError("SUCESSO");
             NavigationManager.NavigateTo("/paginicial");
         }
         else
         {
-            Logger.LogError($"ERRO:{responseLicitacao}");
             NavigationManager.NavigateTo("/licitacaoError");
 
         }

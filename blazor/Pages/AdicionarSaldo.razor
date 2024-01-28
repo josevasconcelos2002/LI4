@@ -8,15 +8,16 @@
 @using System.IdentityModel.Tokens.Jwt;
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
-        text-align: center; /* Alinha o texto ao centro */
+        align-items: center; 
+        text-align: center; 
     }
 
     .form-group {
@@ -34,27 +35,29 @@
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        box-sizing: border-box; /* Garante que padding não aumente o tamanho do input */
+        box-sizing: border-box; 
     }
 
     button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin-top: 20px; /* Espaço acima do botão */
+        margin-top: 20px; 
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        display: block; /* Ocupa a linha inteira */
-        margin: 10px auto; /* Centraliza o botão */
+        display: block; 
+        margin: 10px auto; 
     }
 
         button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3;
         }
 </style>
 
+
+<!-- HTML -->
 <body>
     <PageTitle>Adicionar Saldo</PageTitle>
 
@@ -70,17 +73,11 @@
 </body>
 
 
-
+<!-- C# -->
 @code {
     private HttpClient httpClient;
     String nif;
     private decimal amount;
-
-    public class SaldoRequest
-    {
-        public string Nif { get; set; }
-        public decimal Amount { get; set; }
-    }
 
     private async Task AddSaldo()
     {   
@@ -89,18 +86,21 @@
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
             nif = await SharedMethods.GetNifFromToken(LocalStorage);
-            
+
             var saldoRequest = new SaldoRequest
             {
                 Nif = nif,
                 Amount = amount
             };
-            
+
             var response = await httpClient.PostAsJsonAsync($"api/utilizador/adicionarSaldo", saldoRequest);
             if (response.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/paginicial");
-            } else {Logger.LogError($"{response}");}
+            } else
+            {
+                NavigationManager.NavigateTo("/adicionarSaldoError");
+            }
 
         } catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
     }
@@ -109,4 +109,11 @@
     {
         NavigationManager.NavigateTo("/paginicial");
     }
+
+    public class SaldoRequest
+    {
+        public string Nif { get; set; }
+        public decimal Amount { get; set; }
+    }
+
 }

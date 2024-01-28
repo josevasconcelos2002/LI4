@@ -8,49 +8,52 @@
 @using blazor.Models
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
-        text-align: center; /* Alinha o texto ao centro */
+        align-items: center; 
+        text-align: center;
     }
 
     ul {
-        list-style-type: none; /* Remove os marcadores de lista */
+        list-style-type: none; 
         padding: 0;
     }
 
     li {
-        margin-bottom: 10px; /* Espaço entre os itens da lista */
+        margin-bottom: 10px;
     }
 
     button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin-top: 20px; /* Espaço acima do botão */
+        margin-top: 20px; 
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        display: block; /* Ocupa a linha inteira */
-        margin: 10px auto; /* Centraliza o botão */
+        display: block; 
+        margin: 10px auto; 
     }
 
         button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3; 
         }
 </style>
 
+
+<!-- HTML -->
 <body>
     <h1>Detalhes do Leilão</h1>
     @if (response == null)
     {
-        <p><em>Carregando detalhes do leilão...</em></p>
+        <p><em>A carregar detalhes do leilão...</em></p>
     }
     else
     {
@@ -111,7 +114,6 @@
             NavigationManager.NavigateTo("/aprovarError");
 
         }
-
     }
 
     private async Task Eliminar()
@@ -119,46 +121,28 @@
         httpClient = HttpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri("https://localhost:7295");
 
-        // Exclui o leilão e obtém o ID do produto
         var responseLeilao = await httpClient.DeleteAsync($"api/leilao/{LeilaoId}");
-
         if (responseLeilao.IsSuccessStatusCode)
         {
-            // Extrai o ID do produto como uma string e depois converte para int
             var produtoIdString = await responseLeilao.Content.ReadAsStringAsync();
             int produtoId;
-            if (int.TryParse(produtoIdString, out produtoId))
-            {
-                // Agora, exclui o produto usando o ID obtido
-                var responseProduto = await httpClient.DeleteAsync($"api/produto/{produtoId}");
+            int.TryParse(produtoIdString, out produtoId);
+            var responseProduto = await httpClient.DeleteAsync($"api/produto/{produtoId}");
 
-                if (responseProduto.IsSuccessStatusCode)
-                {
-                    NavigationManager.NavigateTo("/paginicialAdmin");
-                }
-                else
-                {
-                    // Trata o erro ao tentar excluir o produto
-                    NavigationManager.NavigateTo("/erroAoExcluirProduto");
-                }
-            }
-            else
+            if (responseProduto.IsSuccessStatusCode)
             {
-                // Trata o erro na conversão do ID do produto
-                NavigationManager.NavigateTo("/erroConversaoIdProduto");
+                NavigationManager.NavigateTo("/paginicialAdmin");
             }
         }
         else
         {
-            // Trata o erro ao tentar excluir o leilão
-            NavigationManager.NavigateTo("/erroAoExcluirLeilao");
+            NavigationManager.NavigateTo("/eliminarLeilaoError");
         }
     }
 
 
 
 
-    // falta a cena de eliminar o leilão
 
     private void GoBack()
     {

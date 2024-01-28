@@ -1,24 +1,25 @@
-﻿@page "/aprovarError"
+﻿@page "/adicionarSaldoError"
 @inject NavigationManager NavigationManager
 
 
 <!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; 
+        background-color: #f5f5dc;
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: center; 
         text-align: center; 
+    }
 
     button {
-        background-color: #007BFF;
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin-top: 20px; 
+        margin-top: 20px;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
@@ -26,12 +27,13 @@
 
         button:hover {
             background-color: #0056b3; 
+        }
 </style>
 
 
 <!-- HTML -->
 <body>
-    <h1>Erro ao aprovar o leilão. Tente outra vez</h1>
+    <h1>Erro ao adicionar saldo. Tente outra vez</h1>
     <button @onclick="GoBack">Voltar</button>
 </body>
 
@@ -40,6 +42,6 @@
 @code {
     private void GoBack()
     {
-        NavigationManager.NavigateTo("/paginicialAdmin");
+        NavigationManager.NavigateTo("/paginicial");
     }
 }

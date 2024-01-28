@@ -51,6 +51,16 @@ namespace leiloes.Controllers
         [HttpPost]
         public async Task<ActionResult<Leilao>> Create([FromBody] Leilao leilao)
         {
+            // Verificar se o valor de abertura é maior do que 0 e se a data final não é no passado
+            bool precoMinValido = leilao.PrecoMinLicitacao >= 0;
+            bool dataFinalValida = leilao.DataFinal >= DateTime.Now;
+            
+            if (!precoMinValido || !dataFinalValida)
+            {
+                return BadRequest("Nif, Username ou Email já existem na base de dados.");
+            }
+
+
             var produto = await _context.Produtos.FindAsync(leilao.ProdutoId);
             var criador = await _context.Utilizadores.FindAsync(leilao.CriadorId);
 

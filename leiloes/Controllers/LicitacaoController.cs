@@ -16,14 +16,12 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-        // GET: api/Licitacao
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Licitacao>>> GetLicitacoes()
         {
             return await _context.Licitacoes.ToListAsync();
         }
 
-        // POST: api/Licitacao
         [HttpPost]
         public async Task<ActionResult<Licitacao>> Create([FromBody] Licitacao licitacao)
         {
@@ -34,38 +32,27 @@ namespace leiloes.Controllers
             var nif = licitacao.user_Nif;
             var utilizador = await _context.Utilizadores.FindAsync(nif);
 
-            // Utilizador não tem saldo
-            if (utilizador.Saldo < licitacao.Valor)
+            bool saldoInsuficiente = utilizador.Saldo < licitacao.Valor;
+            bool licitacaoBaixa = licitacao.Valor < leilao.LicitacaoAtual || licitacao.Valor < leilao.PrecoMinLicitacao;
+            bool proprioLeilao = leilao.CriadorId == user.Nif;
+            bool leilaoNaoAtivo = leilao.Estado != "ativo";
+
+            if (saldoInsuficiente || licitacaoBaixa || proprioLeilao || leilaoNaoAtivo)
             {
-                return BadRequest("Saldo insuficiente para a licitação.");
+                return BadRequest("Licitação inválida.");
             }
-
-            // Licitação mais baixa/igual à última
-            if (licitacao.Valor < leilao.LicitacaoAtual)
+            else
             {
-                return BadRequest("Licitação demasiado baixa.");
+                utilizador.Saldo -= licitacao.Valor;
+                _context.Update(utilizador);
+                leilao.LicitacaoAtual = licitacao.Valor;
+                _context.Update(leilao);
+                _context.Licitacoes.Add(licitacao);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetLicitacao), new { id = licitacao.IdLicitacao }, licitacao);
             }
-
-            // Licitação no próprio leilão
-            if (leilao.CriadorId == user.Nif)
-            {
-                return BadRequest("Licitação inválida");
-            }
-
-
-            utilizador.Saldo -= licitacao.Valor;
-            _context.Update(utilizador);
-
-            leilao.LicitacaoAtual = licitacao.Valor;
-            _context.Update(leilao);
-
-            _context.Licitacoes.Add(licitacao);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetLicitacao), new { id = licitacao.IdLicitacao }, licitacao);
         }
 
-        // GET: api/Licitacao/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Licitacao>> GetLicitacao(int id)
         {

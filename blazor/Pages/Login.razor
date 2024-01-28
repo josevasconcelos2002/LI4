@@ -9,23 +9,24 @@
 @using blazor.Models
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Altura da viewport */
+        height: 100vh; 
         margin: 0;
     }
     .autenticacao-container {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         width: 300px;
-        margin: 0 auto; /* Centralizar horizontalmente */
+        margin: 0 auto; 
         text-align: center;
     }
 
@@ -42,7 +43,7 @@
     }
 
     .autenticacao-button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
@@ -52,10 +53,12 @@
     }
 
         .autenticacao-button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3;
         }
 </style>
 
+
+<!-- HTML -->
 <div class="autenticacao-container">
     <h3>Autenticação</h3>
     <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
@@ -97,7 +100,6 @@
             await LocalStorage.SetItemAsync("jwt_token", tokenResponse["token"]);
 
             var userType = await SharedMethods.GetUserTypeFromToken(LocalStorage);
-
             if (userType == "1")
             {
                 NavigationManager.NavigateTo("/paginicialAdmin");

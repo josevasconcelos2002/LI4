@@ -2,34 +2,33 @@
 @inject NavigationManager NavigationManager
 
 
-
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Altura da viewport */
+        height: 100vh; 
         margin: 0;
     }
 
     .titulo {
-        margin-bottom: 200px; /* Afasta o título do topo */
+        margin-bottom: 200px; 
         font-size: 48px;
         color: #333;
     }
 
-    /* Estilo dos botões */
     .botoes {
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centraliza os botões horizontalmente */
-        gap: 20px; /* Espaço entre os botões */
+        align-items: center; 
+        gap: 20px; 
     }
 
     .botao {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 15px 30px;
@@ -39,6 +38,8 @@
     }
 </style>
 
+
+<!-- HTML -->
 <h1 class="titulo">Bem-vindo ao Sistema de Leilões</h1>
 
 <div class="botoes">
@@ -47,7 +48,7 @@
 </div>
 
 
-
+<!-- C# -->
 @code {
     private void NavigateToRegister()
     {
