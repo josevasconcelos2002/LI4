@@ -6,6 +6,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 @inject ILogger<CriarLeilao> Logger
+@inject IWebHostEnvironment Environment
 
 
 <style>
@@ -67,8 +68,8 @@
             <InputText id="nomeProduto" @bind-Value="leilaoProdutoModel.Produto.Nome" />
         </div>
         <div class="form-group">
-            <label for="imagem">Caminho da Imagem:</label>
-            <InputText id="imagem" @bind-Value="leilaoProdutoModel.Produto.Imagem" />
+            <label for="imagem">Imagem do Produto:</label>
+            <InputFile id="imagem" OnChange="@OnInputFileChange" />
         </div>
         <div class="form-group">
             <label for="descricao">Descrição:</label>
@@ -137,6 +138,28 @@
             Logger.LogError($"AAA:{errorMessage}"); // "Erro de ModelState no método Create"
         }
     }
+
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            // Gera um nome de arquivo único para evitar conflitos
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+
+            // Combina o caminho da pasta 'wwwroot/img' com o novo nome de arquivo
+            var path = Path.Combine(Environment.WebRootPath, "img", fileName);
+
+            // Salva o arquivo no sistema de arquivos do servidor
+            await using var fs = new FileStream(path, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fs);
+
+            // Atualiza o modelo com o caminho relativo para a imagem
+            leilaoProdutoModel.Produto.Imagem = $"/img/{fileName}";
+        }
+    }
+
 
     private void UpdateDataFinal(ChangeEventArgs e)
     {
