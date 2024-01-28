@@ -3,6 +3,7 @@
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
 @inject ILogger<Paginicial> Logger
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 @using blazor.Models
 
@@ -85,7 +86,7 @@
         <div class="action-buttons">
             <button @onclick="CriarLeilao">Criar Leilao</button>
             <button @onclick="VerPerfil">Perfil</button>
-            <button @onclick="VerStats">Estatísticas</button>
+            <button @onclick="() => VerStats(nif)">Estatísticas</button>
             <button @onclick="GoBack">Voltar</button>
         </div>
     }
@@ -99,6 +100,7 @@
 @code {
     private HttpClient httpClient;
     private IEnumerable<LeilaoSimplesModel> response;
+    private string nif;
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,6 +109,7 @@
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
             response = await httpClient.GetFromJsonAsync<IEnumerable<LeilaoSimplesModel>>("api/home");
+            nif = await SharedMethods.GetNifFromToken(LocalStorage);
         }
             
         catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}
@@ -125,9 +128,9 @@
     {
         NavigationManager.NavigateTo("/perfil");
     }
-    private void VerStats()
+    private void VerStats(string nif)
     {
-        NavigationManager.NavigateTo("/verStats");
+        NavigationManager.NavigateTo($"/stats/{nif}");
     }
     private void GoBack()
     {

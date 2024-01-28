@@ -1,0 +1,100 @@
+﻿@page "/stats/{nif}"
+@inject HttpClient Http
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@using blazor.Models 
+@using System.Net.Http.Json
+
+<style>
+    body {
+        background-color: #f5f5dc; /* Bege claro */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centralizar horizontalmente */
+        text-align: center; /* Alinha o texto ao centro */
+    }
+
+    ul {
+        list-style-type: none; /* Remove os marcadores de lista */
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 10px; /* Espaço entre os itens da lista */
+    }
+
+    h4 {
+        color: #007BFF; /* Azul */
+        margin-top: 20px;
+    }
+
+    div {
+        margin-bottom: 20px;
+    }
+</style>
+
+<body>
+    <h3>Estatísticas</h3>
+
+    @if (estatisticas == null)
+    {
+        <p><em>Carregando...</em></p>
+    }
+    else
+    {
+        <div>
+            <h4>Últimos 10 Leilões</h4>
+            <ul>
+                @foreach (var leilao in estatisticas.UltimosDezLeiloes)
+                {
+                    <li>@leilao.Nome - @leilao.ValorFinal</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h4>10 Maiores Vendas</h4>
+            <ul>
+                @foreach (var venda in estatisticas.DezMaioresVendas)
+                {
+                    <li>@venda.Nome - @venda.ValorFinal</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <p>Total de Vendas: @estatisticas.TotalVendas</p>
+            <p>Total em Dinheiro: @estatisticas.TotalDinheiro</p>
+        </div>
+    }
+</body>
+
+
+@code {
+    [Parameter]
+    public string nif { get; set; }
+    private LeilaoViewModel estatisticas; 
+    private HttpClient httpClient;
+
+    protected override async Task OnInitializedAsync()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7295");
+        estatisticas = await httpClient.GetFromJsonAsync<LeilaoViewModel>($"api/stats/{nif}");
+    }
+
+    public class LeilaoViewModel
+    {
+        public List<LeilaoDetalhe> UltimosDezLeiloes { get; set; }
+        public List<LeilaoDetalhe> DezMaioresVendas { get; set; }
+        public int TotalVendas { get; set; }
+        public decimal TotalDinheiro { get; set; }
+    }
+
+    public class LeilaoDetalhe
+    {
+        public string Nome { get; set; }
+        public decimal ValorFinal { get; set; }
+    }
+}
+
