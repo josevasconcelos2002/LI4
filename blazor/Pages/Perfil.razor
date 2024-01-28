@@ -7,65 +7,69 @@
 @using System.IdentityModel.Tokens.Jwt;
 @using blazor.Models
 
+
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
-        text-align: center; /* Alinha o texto ao centro */
+        align-items: center; 
+        text-align: center;
     }
 
     ul {
-        list-style-type: none; /* Remove os marcadores de lista */
+        list-style-type: none; 
         padding: 0;
     }
 
     li {
-        margin-bottom: 10px; /* Espaço entre os itens da lista */
+        margin-bottom: 10px; 
     }
 
     .leilao-button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin: 5px auto; /* Centraliza e adiciona espaço ao redor do botão */
+        margin: 5px auto; 
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        display: block; /* Faz o botão ocupar a linha inteira */
+        display: block; 
     }
 
         .leilao-button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3; 
         }
 
     button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
         padding: 10px 20px;
-        margin-top: 20px; /* Espaço acima do botão */
+        margin-top: 20px; 
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        display: block; /* Ocupa a linha inteira */
-        margin: 10px auto; /* Centraliza o botão */
+        display: block; 
+        margin: 10px auto; 
     }
 
         button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3; 
         }
 </style>
 
+
+<!-- HTML -->
 <body>
     <h1>Perfil</h1>
     @if (user == null)
     {
-        <p><em>Carregando detalhes do usuário...</em></p>
+        <p><em>A carregar...</em></p>
     }
     else
     {
@@ -93,6 +97,7 @@
 </body>
 
 
+<!-- C# -->
 @code {
     private HttpClient httpClient;
     private UtilizadorModel user;

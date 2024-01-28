@@ -77,6 +77,7 @@
 </body>
 
 
+<!-- C# -->
 @code {
     [Parameter]
     public string LeilaoId { get; set; }
@@ -140,13 +141,9 @@
         }
     }
 
-
-
-
-
     private void GoBack()
     {
-        NavigationManager.NavigateTo("/paginicial");
+        NavigationManager.NavigateTo("/paginicialAdmin");
     }
     public class Licitacao
     {

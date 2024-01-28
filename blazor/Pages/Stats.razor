@@ -2,45 +2,68 @@
 @inject HttpClient Http
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+
 @using blazor.Models 
 @using System.Net.Http.Json
 
+
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
-        text-align: center; /* Alinha o texto ao centro */
+        align-items: center; 
+        text-align: center; 
     }
 
     ul {
-        list-style-type: none; /* Remove os marcadores de lista */
+        list-style-type: none; 
         padding: 0;
     }
 
     li {
-        margin-bottom: 10px; /* Espaço entre os itens da lista */
+        margin-bottom: 10px; 
     }
 
     h4 {
-        color: #007BFF; /* Azul */
+        color: #007BFF; 
         margin-top: 20px;
     }
 
     div {
         margin-bottom: 20px;
     }
+
+    button {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+        margin: 10px auto;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
 </style>
 
+
+<!-- HTML -->
 <body>
     <h3>Estatísticas</h3>
 
     @if (estatisticas == null)
     {
-        <p><em>Carregando...</em></p>
+        <p><em>A carregar...</em></p>
     }
     else
     {
@@ -66,10 +89,12 @@
             <p>Total de Vendas: @estatisticas.TotalVendas</p>
             <p>Total em Dinheiro: @estatisticas.TotalDinheiro</p>
         </div>
+        <button @onclick="GoBack">Página Inicial</button>
     }
 </body>
 
 
+<!-- C# -->
 @code {
     [Parameter]
     public string nif { get; set; }
@@ -81,6 +106,11 @@
         httpClient = HttpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri("https://localhost:7295");
         estatisticas = await httpClient.GetFromJsonAsync<LeilaoViewModel>($"api/stats/{nif}");
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/Paginicial");
     }
 
     public class LeilaoViewModel

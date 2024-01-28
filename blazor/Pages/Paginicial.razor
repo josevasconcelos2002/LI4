@@ -8,14 +8,15 @@
 @using blazor.Models
 
 
+<!-- CSS -->
 <style>
     body {
-        background-color: #f5f5dc; /* Bege claro */
+        background-color: #f5f5dc; 
         margin: 0;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centralizar horizontalmente */
+        align-items: center; 
     }
 
     .leiloes-container {
@@ -24,21 +25,21 @@
     }
 
     .leilao-button {
-        background-color: #007BFF; /* Azul */
+        background-color: #007BFF; 
         color: #fff;
         border: none;
-        padding: 15px 20px; /* Aumenta o padding para um tamanho maior */
-        margin: 10px auto; /* Centraliza o botão */
+        padding: 15px 20px; 
+        margin: 10px auto; 
         border-radius: 5px;
         cursor: pointer;
-        font-size: 18px; /* Aumenta o tamanho da fonte */
-        display: block; /* Faz o botão ocupar a linha inteira */
-        width: 100%; /* Largura aumentada */
-        min-width: 300px; /* Largura mínima */
+        font-size: 18px; 
+        display: block; 
+        width: 100%; 
+        min-width: 300px; 
     }
 
         .leilao-button:hover {
-            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+            background-color: #0056b3; 
         }
 
     .action-buttons {
@@ -46,30 +47,32 @@
         justify-content: space-between;
         margin-top: 20px;
         width: 80%;
-        flex-wrap: wrap; /* Quebra a linha caso necessário */
+        flex-wrap: wrap; 
     }
 
         .action-buttons button {
-            background-color: #007BFF; /* Azul */
+            background-color: #007BFF; 
             color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin: 5px; /* Espaçamento entre os botões */
+            margin: 5px; 
         }
 
             .action-buttons button:hover {
-                background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+                background-color: #0056b3; 
             }
 </style>
 
+
+<!-- HTML -->
 <body>
     <h1>Leilões</h1>
     @if (response == null)
     {
-        <p><em>Carregando...</em></p>
+        <p><em>A carregar...</em></p>
     }
     else
     {
@@ -93,10 +96,7 @@
 </body>
 
 
-
-
-
-
+<!-- C# -->
 @code {
     private HttpClient httpClient;
     private IEnumerable<LeilaoSimplesModel> response;
