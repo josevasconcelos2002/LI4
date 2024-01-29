@@ -93,6 +93,7 @@
 
         <button @onclick="AdicionarSaldo">Adicionar Saldo</button>
         <button @onclick="GoBack">Página Inicial</button>
+        <button @onclick="Desconectar">Desconectar</button>
     }
 </body>
 
@@ -129,5 +130,9 @@
     private void GoBack()
     {
         NavigationManager.NavigateTo("/Paginicial");
+    }
+    private void Desconectar()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
