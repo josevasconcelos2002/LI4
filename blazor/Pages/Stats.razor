@@ -72,7 +72,7 @@
             <ul>
                 @foreach (var leilao in estatisticas.UltimosDezLeiloes)
                 {
-                    <li>@leilao.Nome - @leilao.ValorFinal</li>
+                    <li>@leilao.Nome - @leilao.LicitacaoAtual</li>
                 }
             </ul>
         </div>
@@ -81,7 +81,7 @@
             <ul>
                 @foreach (var venda in estatisticas.DezMaioresVendas)
                 {
-                    <li>@venda.Nome - @venda.ValorFinal</li>
+                    <li>@venda.Nome - @venda.LicitacaoAtual</li>
                 }
             </ul>
         </div>
@@ -124,7 +124,7 @@
     public class LeilaoDetalhe
     {
         public string Nome { get; set; }
-        public decimal ValorFinal { get; set; }
+        public decimal LicitacaoAtual { get; set; }
     }
 }
 
