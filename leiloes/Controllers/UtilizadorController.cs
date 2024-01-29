@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 
-
-
 namespace leiloes.Controllers
 {
     [Route("api/[controller]")]
@@ -21,26 +19,21 @@ namespace leiloes.Controllers
     {
         private readonly LeiloesDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<UtilizadorController> _logger;
 
-
-        public UtilizadorController(LeiloesDbContext context, IConfiguration configuration, ILogger<UtilizadorController> logger)
+        public UtilizadorController(LeiloesDbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-            _logger = logger;
         }
 
-
-        // ---------------------- Lista de utilizadores ----------------------
+        // Devolve todos os utilizadores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
         {
             return await _context.Utilizadores.ToListAsync();
         }
 
-
-        // ---------------------- Utilizador através do nif ----------------------
+        // Devolve utilizador por nif
         [HttpGet("{nif}")]
         public async Task<ActionResult<Utilizador>> GetUtilizador(string nif)
         {
@@ -69,6 +62,7 @@ namespace leiloes.Controllers
                     return BadRequest("Nif, Username ou Email já existem na base de dados.");
                 }
 
+                // hashing da password
                 using (var sha256 = SHA256.Create())
                 {
                     var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(utilizador.Password));
@@ -76,6 +70,7 @@ namespace leiloes.Controllers
                     utilizador.Password = hash;
                 }
 
+                // Completar com os elementos que são definidos automaticamente
                 utilizador.UserType = 0;
                 utilizador.Saldo = 0.00M;
 
@@ -106,11 +101,13 @@ namespace leiloes.Controllers
 
 
         // ---------------------- Autenticar Utilizador ----------------------
+        // Gerar um JWT token para o programa saber sempre quem é o user
         private string GenerateJwtToken(Utilizador user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            // registar o username, o email, o userType e o nif no token (o nif será o mais usado)
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
@@ -129,16 +126,16 @@ namespace leiloes.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
    
-
+        // Autenticar o utilizador
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            _logger.LogInformation("oláaa");
             var user = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.Username == loginRequest.Username);
 
             if (user != null)
             {
+                // verificar as credenciais
                 using (var sha256 = SHA256.Create())
                 {
                     var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(loginRequest.Password));
@@ -161,7 +158,6 @@ namespace leiloes.Controllers
         [HttpGet("perfil/{userId}")]
         public async Task<IActionResult> Perfil()
         {
-            // Extrair o NIF do utilizador do token JWT
             var nif = User.FindFirst("Nif")?.Value; 
 
             if (string.IsNullOrEmpty(nif))
@@ -170,14 +166,13 @@ namespace leiloes.Controllers
             }
 
             // Procurar o utilizador pelo NIF
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.Nif == nif);
-
+            var utilizador = await _context.Utilizadores.FindAsync(nif);
             if (utilizador == null)
             {
                 return NotFound();
             }
 
+            // Devolver a informação necessária para apresentar no perfil
             var leiloesCriados = await _context.Leiloes
                 .Where(l => l.CriadorId == nif)
                 .ToListAsync();
@@ -208,7 +203,6 @@ namespace leiloes.Controllers
             {
                 return NotFound();
             }
-
             if(request.Amount < 0)
             {
                 return BadRequest("Não é possível adicionar saldo negativo");

@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace leiloes.Controllers
 {
-    [Route("api/[controller]")] // Define a rota para a API
-    [ApiController] // Indica que este controller é uma API controller
+    [Route("api/[controller]")] 
+    [ApiController] 
     public class StatsController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
@@ -17,9 +17,9 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-
+        // Devolve estatísticas por user
         [HttpGet("{nif}")] 
-        public async Task<ActionResult<LeilaoViewModel>> GetStats(string nif)
+        public async Task<ActionResult<StatsViewModel>> GetStats(string nif)
         {
             var ultimosDezLeiloes = _context.Leiloes
                 .Where(l => l.CriadorId == nif && l.Estado == "terminado")
@@ -36,7 +36,7 @@ namespace leiloes.Controllers
             var totalVendas = _context.Leiloes.Count(l => l.CriadorId == nif);
             var totalDinheiro = _context.Leiloes.Where(l => l.CriadorId == nif).Sum(l => l.LicitacaoAtual);
 
-            var estatisticas = new LeilaoViewModel
+            var estatisticas = new StatsViewModel
             {
                 UltimosDezLeiloes = await ultimosDezLeiloes.ToListAsync(),
                 DezMaioresVendas = await dezMaioresVendas.ToListAsync(),
@@ -45,14 +45,6 @@ namespace leiloes.Controllers
             };
 
             return Ok(estatisticas);
-        }
-
-        public class LeilaoViewModel
-        {
-            public IEnumerable<object> UltimosDezLeiloes { get; set; }
-            public IEnumerable<object> DezMaioresVendas { get; set; }
-            public int TotalVendas { get; set; }
-            public decimal TotalDinheiro { get; set; }
         }
     }
 }

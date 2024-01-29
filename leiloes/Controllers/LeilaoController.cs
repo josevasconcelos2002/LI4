@@ -7,31 +7,29 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace leiloes.Controllers
 {
-    [Route("api/[controller]")] // Define a rota para a API
+    [Route("api/[controller]")] 
     [ApiController]
     public class LeilaoController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
-        private readonly ILogger<LeilaoController> _logger;
 
-        public LeilaoController(LeiloesDbContext context, ILogger<LeilaoController> logger)
+        public LeilaoController(LeiloesDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
+        // Devolve todos os leilões
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Leilao>>> GetLeiloes()
         {
-            _logger.LogInformation("olá1");
             var leiloes = await _context.Leiloes.ToListAsync();
             return Ok(leiloes);
         }
 
+        // Devolve o leilão por id
         [HttpGet("{id}")]
         public async Task<ActionResult<Leilao>> GetLeilao(int id)
         {
-            _logger.LogInformation("olá2");
             var leilao = await _context.Leiloes.FindAsync(id);
 
             if (leilao == null)
@@ -41,11 +39,6 @@ namespace leiloes.Controllers
 
             return leilao;
         }
-
-
-     
-
-
 
         // ---------------------- Criar Leilao ----------------------
         [HttpPost]
@@ -57,19 +50,15 @@ namespace leiloes.Controllers
             
             if (!precoMinValido || !dataFinalValida)
             {
-                return BadRequest("Nif, Username ou Email já existem na base de dados.");
+                return BadRequest("Valor(es) inválido(s)");
             }
 
-
-            var produto = await _context.Produtos.FindAsync(leilao.ProdutoId);
-            var criador = await _context.Utilizadores.FindAsync(leilao.CriadorId);
-
+            // Completar com os elementos que são definidos automaticamente
             leilao.DataInicial = DateTime.Now;
             leilao.LicitacaoAtual = 0.00M;
             leilao.Estado = "pendente";
-            leilao.Produto = produto;
-            leilao.Criador = criador;
-
+            leilao.Produto = await _context.Produtos.FindAsync(leilao.ProdutoId);
+            leilao.Criador = await _context.Utilizadores.FindAsync(leilao.CriadorId);
 
             _context.Leiloes.Add(leilao);
             await _context.SaveChangesAsync();
@@ -78,39 +67,32 @@ namespace leiloes.Controllers
         }
 
 
-
         // ---------------------- Eliminar Leilao ----------------------
-        // DELETE -> Mostra a página de remoção do leilao
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> Delete(int id)
         {
-            _logger.LogInformation("olá4");
             var leilao = await _context.Leiloes.FindAsync(id);
             if (leilao == null)
             {
                 return NotFound();
             }
 
-            int produtoId = leilao.ProdutoId; // Armazenando o ID do produto antes de deletar o leilão
+            int produtoId = leilao.ProdutoId;
 
             _context.Leiloes.Remove(leilao);
             await _context.SaveChangesAsync();
 
-            return produtoId; // Devolve o ID do produto associado ao leilão deletado
+            // Devolve o ID do produto associado ao leilão deletado
+            // para podermos eliminar o produto 
+            return produtoId;
         }
-
-
-
 
 
         // ---------------------- Aprovar Leilao ----------------------
         [HttpPost("aprovarLeilao/{leilaoId}")]
         public async Task<IActionResult> AprovarLeilao(int leilaoId)
         {
-            _logger.LogInformation("olá5");
-
-            var leilao = await _context.Leiloes
-                .FirstOrDefaultAsync(l => l.IdLeilao == leilaoId);
+            var leilao = await _context.Leiloes.FindAsync(leilaoId);
 
             if (leilao == null)
             {
@@ -131,12 +113,10 @@ namespace leiloes.Controllers
         }
 
 
-
-        // ---------------------- Consultar LeiloesUser ---------------------- 
+        // ---------------------- Consultar Leiloes por User ---------------------- 
         [HttpGet("leiloesUser/{nif}")]
         public async Task<ActionResult<IEnumerable<Leilao>>> LeiloesUser(string nif)
         {
-            _logger.LogInformation("olá6");
             var leiloes = await _context.Leiloes
                 .Where(l => l.CriadorId == nif) 
                 .Select(l => new LeilaoViewModel

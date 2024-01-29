@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace leiloes.Controllers
 {
-    [Route("api/[controller]")] // Define a rota para a API
-    [ApiController] // Indica que este controller é uma API controller
+    [Route("api/[controller]")] 
+    [ApiController] 
     public class HomeController : ControllerBase
     {
         private readonly LeiloesDbContext _context;
@@ -17,6 +17,7 @@ namespace leiloes.Controllers
             _context = context;
         }
 
+        // Devolve todos os leilões ativos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LeilaoViewModel>>> Index()
         {
@@ -33,6 +34,7 @@ namespace leiloes.Controllers
             return Ok(leiloesAtivos);
         }
 
+        // Devolve todos os leilões pendentes
         [HttpGet("pendentes")]
         public async Task<ActionResult<IEnumerable<LeilaoViewModel>>> GetLeiloesPendentes()
         {

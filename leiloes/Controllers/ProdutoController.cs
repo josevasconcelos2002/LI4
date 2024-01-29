@@ -15,30 +15,14 @@ namespace leiloes.Controllers
             _context = context;
         }
 
-        // GET: api/Produto
+        // Devolve todos os produtos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
             return await _context.Produtos.ToListAsync();
         }
 
-        // POST: api/Produto
-        [HttpPost]
-        public async Task<ActionResult<Produto>> Create([FromBody] Produto produto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
-
-            return Ok(produto);
-        }
-
-        // GET: api/Produto/5
-        [HttpGet("{id}")]
+        // Devolve produto por id
         public async Task<ActionResult<Produto>> GetProduto(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -49,7 +33,23 @@ namespace leiloes.Controllers
             return produto;
         }
 
-        // DELETE: api/Produto/5
+
+        // ---------------------- Criar Produto ---------------------- 
+        [HttpPost]
+        public async Task<ActionResult<Produto>> Create([FromBody] Produto produto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _context.Produtos.Add(produto);
+            await _context.SaveChangesAsync();
+
+            return Ok(produto);
+        }
+
+
+        // ---------------------- Eliminar Produto ---------------------- 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -58,7 +58,6 @@ namespace leiloes.Controllers
             {
                 return NotFound();
             }
-
             _context.Produtos.Remove(produto);
             await _context.SaveChangesAsync();
 

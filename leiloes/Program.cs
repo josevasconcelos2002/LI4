@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Adicionar serviços ao container.
 builder.Services.AddDbContext<leiloes.LeiloesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddControllers();
 
 // Configuração do JWT
@@ -38,7 +37,7 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // Configurar o timer para verificar os leilões
-var timer = new Timer(CheckLeiloes, null, 0, 60000); // Executa a cada minutos
+var timer = new Timer(CheckLeiloes, null, 0, 1000); // Executa a cada segundo
 
 
 // Configure o pipeline de requisições HTTP.
@@ -59,16 +58,13 @@ app.Run();
 
 void CheckLeiloes(object state)
 {
-    // Obtém uma instância do escopo de serviço
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<leiloes.LeiloesDbContext>();
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
-      
         VerificarETerminarLeiloes(dbContext);
-
     }
     catch (Exception ex)
     {
