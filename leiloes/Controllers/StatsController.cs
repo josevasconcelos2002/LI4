@@ -28,13 +28,13 @@ namespace leiloes.Controllers
                 .Select(l => new { l.Produto.Nome, l.LicitacaoAtual });
 
             var dezMaioresVendas = _context.Leiloes
-                .Where(l => l.CriadorId == nif)
+                .Where(l => l.CriadorId == nif && l.Estado == "terminado")
                 .OrderByDescending(l => l.LicitacaoAtual)
                 .Take(10)
                 .Select(l => new { l.Produto.Nome, l.LicitacaoAtual });
 
-            var totalVendas = _context.Leiloes.Count(l => l.CriadorId == nif);
-            var totalDinheiro = _context.Leiloes.Where(l => l.CriadorId == nif).Sum(l => l.LicitacaoAtual);
+            var totalVendas = _context.Leiloes.Count(l => l.CriadorId == nif && l.Estado == "terminado");
+            var totalDinheiro = _context.Leiloes.Where(l => l.CriadorId == nif && l.Estado == "terminado").Sum(l => l.LicitacaoAtual);
 
             var estatisticas = new StatsViewModel
             {
