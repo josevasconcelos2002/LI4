@@ -101,14 +101,14 @@
                 <div class="info-leilao">
                     <h2>Informações do Produto</h2>
                     <ul>
-                        <li>ID: @response.IdLeilao</li>
-                        <li>Lance Atual: @response.LicitacaoAtual</li>
-                        <li>Preço Mínimo: @response.PrecoMinLicitacao</li>
+                        <li>@produto.Nome</li>
+                        <li>Descrição: @produto.Descricao</li>
+                        <li>Número de Donos Anteriores: @produto.NumDonosAnt</li>
+                        <li>Valor de Abertura: @response.PrecoMinLicitacao</li>
+                        <li>Licitação Atual: @response.LicitacaoAtual</li>
                         <li>Status: @response.Estado</li>
                         <li>Data de Início: @response.DataInicial</li>
                         <li>Data Final: @response.DataFinal</li>
-                        <li>ID do Criador: @response.CriadorId</li>
-                        <li>ID do Produto: @response.ProdutoId</li>
                     </ul>
                 </div>
 
@@ -156,6 +156,7 @@
             httpClient = HttpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("https://localhost:7295");
             response = await httpClient.GetFromJsonAsync<LeilaoModel>($"api/leilao/{LeilaoId}");
+            Logger.LogError($"HTTP Request Error: {response.ProdutoId}");
             produto = await httpClient.GetFromJsonAsync<ProdutoModel>($"api/produto/{response.ProdutoId}");
         }
         catch (HttpRequestException e) {Logger.LogError($"{e.Message}");}

@@ -62,19 +62,19 @@ GO
 
 -- Inserir dados na tabela Produto
 INSERT INTO Produto (nome, descricao, imagem, numDonosAnt) VALUES 
-('Mercedes EQA' ,                  'SUV compacto elétrico e elegante', 'caminho/para/imagem1.jpg',   0),
-('Terreno em Vila Franca de Xira', '20000m^2, pronto para construção', 'caminho/para/imagem2.jpg',   1),
-('Camisola de LeBron James',       'Camisola usada em jogo por LBJ',   'caminho/para/imagem3.jpg',   3),
-('Relógio Vintage Omega',          'Relógio Omega anos 50',            'caminho/para/imagem4.jpg',   4),
-('Vinil Autografado Beatles',      'Disco dos Beatles assinado',       'caminho/para/imagem5.jpg',   5),
-('Pintura Original Monet',         'Quadro impressionista Monet',      'caminho/para/imagem6.jpg',   6),
-('Escultura em Bronze',            'Escultura abstrata moderna',       'caminho/para/imagem7.jpg',   7),
-('Manuscrito Séc. XVIII',          'Documento histórico raro',         'caminho/para/imagem8.jpg',   8),
-('Câmera Leica M3 Clássica',       'Camera Leica modelo M3',           'caminho/para/imagem9.jpg',   9),
-('Vestido de Alta Costura',        'Vestido exclusivo designer',       'caminho/para/imagem10.jpg', 10),
-('Coleção de Moedas Antigas',      'Moedas raras século XIX',          'caminho/para/imagem11.jpg', 11),
-('Guitarra Fender Autografada',    'Guitarra assinada por Clapton',    'caminho/para/imagem12.jpg', 12),
-('Livro Primeira Edição',          'Livro clássico ed. original',      'caminho/para/imagem13.jpg', 13);
+('Mercedes EQA' ,                  'SUV compacto elétrico e elegante', '/img/mercedes.jpg',   0),
+('Terreno em Vila Franca de Xira', '20000m^2, pronto para construção', '/img/terreno.jpg',   1),
+('Camisola de LeBron James',       'Camisola usada em jogo por LBJ',   '/img/jersey.jpg',   3),
+('Relógio Vintage Omega',          'Relógio Omega anos 50',            '/img/relogio.jpg',   4),
+('Vinil Autografado Beatles',      'Disco dos Beatles assinado',       '/img/beatles.jpg',   5),
+('Pintura Original Monet',         'Quadro impressionista Monet',      '/img/quadro.jpg',   6),
+('Escultura em Bronze',            'Escultura abstrata moderna',       '/img/escultura.jpg',   7),
+('Manuscrito Séc. XVIII',          'Documento histórico raro',         '/img/manuscrito.jpg',   8),
+('Câmera Leica M3 Clássica',       'Camera Leica modelo M3',           '/img/camera.jpg',   9),
+('Vestido de Alta Costura',        'Vestido exclusivo designer',       '/img/vestido.jpg', 10),
+('Coleção de Moedas Antigas',      'Moedas raras século XIX',          '/img/moedas.jpg', 11),
+('Guitarra Fender Autografada',    'Guitarra assinada por Clapton',    '/img/guitarra.jpg', 12),
+('Livro Primeira Edição',          'Livro clássico ed. original',      '/img/livro.jpg', 13);
 GO
 
 -- Inserir dados na tabela Utilizador

@@ -23,6 +23,7 @@ namespace leiloes.Controllers
         }
 
         // Devolve produto por id
+        [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProduto(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -30,6 +31,7 @@ namespace leiloes.Controllers
             {
                 return NotFound();
             }
+
             return produto;
         }
 
